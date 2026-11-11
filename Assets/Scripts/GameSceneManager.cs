@@ -1,6 +1,20 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using System.Collections;
+using System;
+
+
+
+public static class SceneChangeSignal
+{
+    public static event Action OnPlay;
+
+    public static void RequestPlay()
+    {
+        OnPlay?.Invoke();
+    }
+}
 
 public class GameSceneManager : MonoBehaviour
 {
@@ -61,7 +75,18 @@ public class GameSceneManager : MonoBehaviour
     /// </summary>
     public void OpenOverlay(string sceneName)
     {
+        StartCoroutine(OpenOverlayRoutine(sceneName));
+    }
+
+    private IEnumerator OpenOverlayRoutine(string sceneName)
+    {
+        
+        
+
+        
         overlayStack.Push(sceneName);
+        SceneChangeSignal.RequestPlay();       // 全局通知
+        yield return new WaitForSeconds(2f);   // 等 2 秒
         SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
     }
 
