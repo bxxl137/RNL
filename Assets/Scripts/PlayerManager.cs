@@ -3,35 +3,42 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class PlayerManager : MonoBehaviour
 {
     [Header("移动")]
-    public float moveSpeed = 4f;//后期改数值，也许地图大小也会有所影响体验
+    public float moveSpeed = 4f;
 
     [Header("移动锁")]
     [SerializeField] private bool canMove = true;
 
-    //是否允许移动。整理杂物、对话、强制剧情时设为 false(可能需要的功能)
+    private readonly HashSet<MoveLockReason> _lockReasons = new HashSet<MoveLockReason>();
+
     public bool CanMove
     {
-        get => canMove;//只读不改
+        get => canMove;
         set
         {
+            if (canMove == value) return;
             canMove = value;
-            if (!canMove)
-            {
-                rb.velocity = Vector2.zero;        // 立即停下
-                anim.SetFloat(SpeedHash, 0f);      // 回 Idle
-            }
+            ApplyLockBehavior();
+            OnMovementLockChanged?.Invoke(!canMove,
+                _lockReasons.Count > 0 ? FirstReason() : MoveLockReason.None);
         }
     }
 
+    public event System.Action<bool, MoveLockReason> OnMovementLockChanged;
+    public bool IsMovementLocked => !canMove;
+
     private Rigidbody2D rb;
-    private Animator anim;//v0.1
+    private Animator anim;
     private SpriteRenderer sr;
     private float inputX;
+    private float lastFacing = 1f;   // 记住最后一次朝向，停下时保持不变
 
-    private static readonly int SpeedHash = Animator.StringToHash("Speed");//静态变量
+    private static readonly int SpeedHash  = Animator.StringToHash("Speed");
+    private static readonly int FacingHash = Animator.StringToHash("Facing");
 
     private void Awake()
     {
@@ -39,9 +46,12 @@ public class PlayerManager : MonoBehaviour
         anim = GetComponent<Animator>();
         sr  = GetComponent<SpriteRenderer>();
 
-        rb.gravityScale = 0f;                                        // 无重力(因为会议说是没用跳跃，所以删除重力，后期碰撞需求再改)
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation;      // 防止碰撞后翻滚，冻结角,可以删除
-        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;//看不懂
+        rb.gravityScale = 0f;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        canMove = _lockReasons.Count == 0;
+        lastFacing = sr.flipX ? -1f : 1f;
     }
 
     private void Update()
@@ -50,23 +60,86 @@ public class PlayerManager : MonoBehaviour
         {
             inputX = 0f;
             anim.SetFloat(SpeedHash, 0f);
+            anim.SetFloat(FacingHash, lastFacing);
             return;
         }
 
-        inputX = Input.GetAxisRaw("Horizontal");   // 只有 -1 / 0 / 1，无惯性
+        inputX = Input.GetAxisRaw("Horizontal");
 
-        // 动画参数：用绝对值，Walk 动画不区分左右
+        // Speed：0 或 1，驱动 idle / walk 切换
         anim.SetFloat(SpeedHash, Mathf.Abs(inputX));
 
-        // 朝向翻转：用 SpriteRenderer.flipX，不动 Scale，避免影响子物体和碰撞体
+        if (inputX > 0.01f)       lastFacing = 1f;
+        else if (inputX < -0.01f) lastFacing = -1f;
+
+        // Facing：只在有输入时更新，停下保持原朝向
+        anim.SetFloat(FacingHash, lastFacing);
+
+        // 翻转仍然用 SpriteRenderer
         if (inputX > 0.01f)       sr.flipX = false;
         else if (inputX < -0.01f) sr.flipX = true;
     }
 
     private void FixedUpdate()
     {
-        // 只改水平速度
-        rb.velocity = new Vector2(inputX * moveSpeed, rb.velocity.y);//也许可以修改？毕竟没用Y
+        rb.velocity = new Vector2(inputX * moveSpeed, rb.velocity.y);
+    }
+
+    // ---------------- 移动锁 ----------------
+
+    public void AddMoveLock(MoveLockReason reason)
+    {
+        if (!_lockReasons.Add(reason)) return;
+        bool wasLocked = !canMove;
+        canMove = false;
+        ApplyLockBehavior();
+        if (!wasLocked) OnMovementLockChanged?.Invoke(true, reason);
+    }
+
+    public void RemoveMoveLock(MoveLockReason reason)
+    {
+        bool removed = _lockReasons.Remove(reason);
+        bool wasLocked = !canMove;
+        if (removed) canMove = _lockReasons.Count == 0;
+        if (removed) ApplyLockBehavior();
+        if (removed && wasLocked && canMove)
+            OnMovementLockChanged?.Invoke(false, reason);
+    }
+
+    public void ClearAllLocks()
+    {
+        if (_lockReasons.Count == 0) return;
+        bool wasLocked = !canMove;
+        _lockReasons.Clear();
+        canMove = true;
+        ApplyLockBehavior();
+        if (wasLocked) OnMovementLockChanged?.Invoke(false, MoveLockReason.None);
+    }
+
+    private void ApplyLockBehavior()
+    {
+        if (canMove) return;
+        if (rb != null) rb.velocity = Vector2.zero;
+        if (anim != null)
+        {
+            anim.SetFloat(SpeedHash, 0f);
+            anim.SetFloat(FacingHash, lastFacing);
+        }
+    }
+
+    private MoveLockReason FirstReason()
+    {
+        foreach (var r in _lockReasons) return r;
+        return MoveLockReason.None;
     }
 }
 
+public enum MoveLockReason
+{
+    None,
+    Story,
+    Interaction,
+    UI,
+    Cutscene,
+    Organizing,
+}
