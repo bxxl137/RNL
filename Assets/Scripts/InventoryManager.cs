@@ -1,46 +1,126 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
+using System.IO;
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance;
 
     [Header("UI 设置")]
-    public TextMeshProUGUI logText;
-    public ScrollRect scrollRect;
+    public Transform contentParent;       // 拖入 ScrollView 的 Content
+    public GameObject itemRowPrefab;      // 拖入包含图标和文字的 ItemRow 预制体
+    public ScrollRect scrollRect;         // 拖入 ScrollView
 
-    private string currentText = "";
+    private List<InventoryItem> inventoryItems = new List<InventoryItem>();
+    private string saveFilePath;
 
     void Awake()
     {
         if (Instance == null) Instance = this;
         else Destroy(gameObject);
+
+        saveFilePath = Path.Combine(Application.persistentDataPath, "inventory.json");
     }
 
     void Start()
     {
-        logText.text = "";
-        currentText = "";
+        LoadData();
     }
 
-    public void AddItem(string itemName, int amount = 1)
+    /// <summary>
+    /// 添加物品（带图片名称和叠加逻辑）
+    /// </summary>
+    public void AddItem(string itemId, string itemName, string iconName, int amount = 1)
     {
-        string newLine = $"获得： {itemName} x{amount}\n";
-        currentText += newLine;
-        logText.text = currentText;
+        InventoryItem existingItem = inventoryItems.Find(item => item.itemId == itemId);
 
-        // --- 强制刷新布局 ---
-        // 1. 刷新 LogText 的文本网格，算出正确的高度
-        logText.ForceMeshUpdate();
+        if (existingItem != null)
+        {
+            existingItem.amount += amount;
+        }
+        else
+        {
+            inventoryItems.Add(new InventoryItem(itemId, itemName, iconName, amount));
+        }
 
-        // 2. 强制 Unity 立即更新所有 Canvas 布局（让 Content Size Fitter 生效，把 Content 撑大）
-        LayoutRebuilder.ForceRebuildLayoutImmediate(Content);
+        RefreshInventoryUI();
+        SaveData();
 
-        // 3. 将滚动条拉到底部 (0表示最底部)
-        scrollRect.verticalNormalizedPosition = 0f;
+        // 如果背包开着，自动滚到底部
+        if (scrollRect != null)
+        {
+            Canvas.ForceUpdateCanvases();
+            scrollRect.verticalNormalizedPosition = 0f;
+        }
     }
 
-    // 为了调用 LayoutRebuilder，我们需要拿到 Content 的 RectTransform
-    public RectTransform Content;
+    /// <summary>
+    /// 刷新背包 UI (改成 public 供外部调用了)
+    /// </summary>
+    public void RefreshInventoryUI()
+    {
+        if (contentParent == null || itemRowPrefab == null) return;
+
+        // 1. 清空旧列表
+        foreach (Transform child in contentParent)
+        {
+            Destroy(child.gameObject);
+        }
+
+        // 2. 遍历数据，重新生成每一行
+        foreach (var item in inventoryItems)
+        {
+            GameObject row = Instantiate(itemRowPrefab, contentParent);
+
+            // 获取子物体上的图片和文本组件 (名字必须与预制体一致)
+            Transform iconTransform = row.transform.Find("IconImage");
+            Transform textTransform = row.transform.Find("ItemText");
+
+            // 设置文字
+            if (textTransform != null)
+            {
+                TextMeshProUGUI rowText = textTransform.GetComponent<TextMeshProUGUI>();
+                rowText.text = $"{item.itemName}  x{item.amount}";
+            }
+
+            // 设置图片
+            if (iconTransform != null)
+            {
+                Image iconImage = iconTransform.GetComponent<Image>();
+                Sprite loadedSprite = Resources.Load<Sprite>("ItemIcons/" + item.iconName);
+
+                if (loadedSprite != null)
+                {
+                    iconImage.sprite = loadedSprite;
+                    iconImage.enabled = true;
+                }
+                else
+                {
+                    iconImage.enabled = false; // 找不到图就隐藏
+                    Debug.LogWarning($"找不到图片: {item.iconName}");
+                }
+            }
+        }
+    }
+
+    private void SaveData()
+    {
+        SaveData data = new SaveData();
+        data.items = inventoryItems;
+        string json = JsonUtility.ToJson(data, true);
+        File.WriteAllText(saveFilePath, json);
+    }
+
+    private void LoadData()
+    {
+        if (File.Exists(saveFilePath))
+        {
+            string json = File.ReadAllText(saveFilePath);
+            SaveData data = JsonUtility.FromJson<SaveData>(json);
+            inventoryItems = data.items;
+            RefreshInventoryUI();
+        }
+    }
 }
