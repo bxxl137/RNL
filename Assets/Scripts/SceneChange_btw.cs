@@ -1,19 +1,17 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SceneChangeView : MonoBehaviour
 {
-    [Header("状态机")]
-    [SerializeField] private Animator animator;
-
-    [Header("黑屏 Canvas (必须拖入!)")]
-    [Tooltip("把黑屏遮罩所在的 Canvas 拖进来")]
+    [Header("拖入你新建的黑图组件")]
     [SerializeField] private Canvas fadeCanvas;
+    [SerializeField] private CanvasGroup fadeCanvasGroup;
+    [SerializeField] private Image fadeImage;
 
     [Header("时长")]
     [SerializeField] private float fadeInDuration = 0.5f;
     [SerializeField] private float fadeOutDuration = 0.5f;
-    [SerializeField] private float blackHoldTime = 0f;
 
     private bool isPlaying;
     public static SceneChangeView Instance { get; private set; }
@@ -21,13 +19,11 @@ public class SceneChangeView : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-        if (animator == null) animator = GetComponentInChildren<Animator>(true);
+
+        // 初始必须是透明的，防止一进游戏就黑屏
+        SetAlpha(0f);
     }
 
     private void OnDestroy()
@@ -47,66 +43,50 @@ public class SceneChangeView : MonoBehaviour
         StartCoroutine(PlayRoutine(onBlacked));
     }
 
+    private void SetAlpha(float a)
+    {
+        if (fadeCanvasGroup != null) fadeCanvasGroup.alpha = a;
+        if (fadeImage != null)
+        {
+            Color c = fadeImage.color;
+            c.a = a;
+            fadeImage.color = c;
+        }
+    }
+
     private IEnumerator PlayRoutine(System.Action onBlacked)
     {
         isPlaying = true;
 
-        // 1. 开始时强制置顶
-        ForceCanvasOnTop();
+        // 确保它永远在 Hierarchy 最下方（渲染在最前面）
+        if (fadeCanvas != null) fadeCanvas.transform.SetAsLastSibling();
 
-        Debug.Log($"[时间:{Time.time:F2}] 1. 开始播放变黑动画，强制播放 FadeIn");
-        if (animator != null) animator.Play("FadeIn", 0, 0f);
+        // 1. 变黑
+        float timer = 0;
+        while (timer < fadeInDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+            SetAlpha(Mathf.Lerp(0, 1, timer / fadeInDuration));
+            yield return null;
+        }
+        SetAlpha(1f); // 确保全黑
 
-        // 等变黑结束
-        yield return new WaitForSeconds(fadeInDuration);
-
-        if (blackHoldTime > 0f)
-            yield return new WaitForSeconds(blackHoldTime);
-
-        // 2. 此时全黑，执行叠加加载
-        Debug.Log($"[时间:{Time.time:F2}] 2. 此时全黑！正在执行 onBlacked 叠加新场景");
+        // 2. 切场景
         onBlacked?.Invoke();
 
-        // ★ 核心修复：因为叠加加载是瞬间完成的，新场景的 UI 脚本需要 1 帧去初始化（Awake/Start）
-        // 我们必须等这一帧过去，新场景的 UI 才会稳定，然后再把黑屏抢回最顶层！
+        // 给新场景 1 帧时间初始化，防止它卡顿导致下一帧时间太长
         yield return null;
 
-        Debug.Log($"[时间:{Time.time:F2}] 2.5 新场景初始化完毕，重新把黑屏抢回最顶层");
-        ForceCanvasOnTop();
-
-        // 3. 开始淡出
-        Debug.Log($"[时间:{Time.time:F2}] 3. 开始播放淡出动画，强制播放 FadeOut");
-        if (animator != null) animator.Play("FadeOut", 0, 0f);
-
-        // 等淡出结束
-        yield return new WaitForSeconds(fadeOutDuration);
-
-        Debug.Log($"[时间:{Time.time:F2}] 4. 动画全部结束，回到 WaitForFade 待机");
-        if (animator != null) animator.Play("WaitForFade", 0, 0f);
+        // 3. 亮屏
+        timer = 0;
+        while (timer < fadeOutDuration)
+        {
+            timer += Time.unscaledDeltaTime;
+            SetAlpha(Mathf.Lerp(1, 0, timer / fadeOutDuration));
+            yield return null;
+        }
+        SetAlpha(0f); // 确保全透明
 
         isPlaying = false;
-    }
-
-    private void ForceCanvasOnTop()
-    {
-        if (fadeCanvas == null) return;
-
-        // 把黑屏放在最底下的子节点（渲染在最前面）
-        fadeCanvas.transform.SetAsLastSibling();
-
-        // 强制覆盖层级
-        fadeCanvas.overrideSorting = true;
-        fadeCanvas.sortingOrder = 32767; // 拉到 short 的最大值，确保没有任何东西能盖住它
-
-        // 如果是 Camera 模式，强制绑定到主相机
-        if (fadeCanvas.renderMode == RenderMode.ScreenSpaceCamera)
-        {
-            Camera mainCam = Camera.main;
-            if (mainCam != null)
-            {
-                fadeCanvas.worldCamera = mainCam;
-                fadeCanvas.planeDistance = 1f; // 放在相机脸上，绝对挡住 3D 物体
-            }
-        }
     }
 }
