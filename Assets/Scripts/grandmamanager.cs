@@ -9,6 +9,8 @@ using UnityEngine;
 /// 可反复对话：玩家进入按 E → 播 firstchat → 消失
 /// → 实时检测 lamp 是否 warm → 是则播 secondchat。
 /// </summary>
+
+
 public class GrandmaChatTrigger : MonoBehaviour
 {
     [Header("UI 引用（初始都未激活）")]
@@ -20,7 +22,7 @@ public class GrandmaChatTrigger : MonoBehaviour
     [SerializeField] private GameObject lampObject;
 
     [Header("交互设置")]
-    [SerializeField] private KeyCode interactKey = KeyCode.E;
+    [SerializeField] private KeyCode interactKey = KeyCode.Backspace;
 
     [Header("文本显示时长")]
     [SerializeField] private float firstChatDuration = 3f;
@@ -33,10 +35,12 @@ public class GrandmaChatTrigger : MonoBehaviour
     {
         if (firstChat != null) firstChat.SetActive(false);
         if (secondChat != null) secondChat.SetActive(false);
+        
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+        
         
         Debug.Log("[GrandmaChatTrigger] 玩家进入触发区", this);
         playerInRange = true;
@@ -44,6 +48,7 @@ public class GrandmaChatTrigger : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        
         
         Debug.Log("[GrandmaChatTrigger] 玩家离开触发区", this);
         playerInRange = false;
