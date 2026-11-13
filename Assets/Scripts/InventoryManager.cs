@@ -29,11 +29,16 @@ public class InventoryManager : MonoBehaviour
         LoadData();
     }
 
+    // ================== 接口区（供外部调用） ==================
+
     /// <summary>
-    /// 添加物品（带图片名称和叠加逻辑）
+    /// 1. 给背包添加物品
     /// </summary>
-    public void AddItem(string itemId, string itemName, string iconName, int amount = 1)
+    /// <returns>返回 true 表示添加成功</returns>
+    public bool AddItem(string itemId, string itemName, string iconName, int amount = 1)
     {
+        if (amount <= 0) return false;
+
         InventoryItem existingItem = inventoryItems.Find(item => item.itemId == itemId);
 
         if (existingItem != null)
@@ -48,44 +53,79 @@ public class InventoryManager : MonoBehaviour
         RefreshInventoryUI();
         SaveData();
 
-        // 如果背包开着，自动滚到底部
         if (scrollRect != null)
         {
             Canvas.ForceUpdateCanvases();
             scrollRect.verticalNormalizedPosition = 0f;
         }
+        return true;
     }
 
     /// <summary>
-    /// 刷新背包 UI (改成 public 供外部调用了)
+    /// 2. 检测背包是否有足够数量的某物品（只查不删）
+    /// </summary>
+    public bool HasItem(string itemId, int amount = 1)
+    {
+        InventoryItem existingItem = inventoryItems.Find(item => item.itemId == itemId);
+        return existingItem != null && existingItem.amount >= amount;
+    }
+
+    /// <summary>
+    /// 3. 检测并删除（消耗）背包里的物品
+    /// </summary>
+    /// <returns>返回 true 表示扣除成功；返回 false 表示物品不够或没有该物品</returns>
+    public bool RemoveItem(string itemId, int amount = 1)
+    {
+        if (amount <= 0) return false;
+
+        InventoryItem existingItem = inventoryItems.Find(item => item.itemId == itemId);
+
+        if (existingItem == null) return false;
+        if (existingItem.amount < amount) return false;
+
+        existingItem.amount -= amount;
+
+        // 如果数量扣到 0 以下，直接从列表移除
+        if (existingItem.amount <= 0)
+        {
+            inventoryItems.Remove(existingItem);
+        }
+
+        RefreshInventoryUI();
+        SaveData();
+
+        return true;
+    }
+
+    // =========================================================
+
+    /// <summary>
+    /// 刷新背包 UI
     /// </summary>
     public void RefreshInventoryUI()
     {
         if (contentParent == null || itemRowPrefab == null) return;
 
-        // 1. 清空旧列表
+        // 清空旧列表
         foreach (Transform child in contentParent)
         {
             Destroy(child.gameObject);
         }
 
-        // 2. 遍历数据，重新生成每一行
+        // 重新生成
         foreach (var item in inventoryItems)
         {
             GameObject row = Instantiate(itemRowPrefab, contentParent);
 
-            // 获取子物体上的图片和文本组件 (名字必须与预制体一致)
             Transform iconTransform = row.transform.Find("IconImage");
             Transform textTransform = row.transform.Find("ItemText");
 
-            // 设置文字
             if (textTransform != null)
             {
                 TextMeshProUGUI rowText = textTransform.GetComponent<TextMeshProUGUI>();
                 rowText.text = $"{item.itemName}  x{item.amount}";
             }
 
-            // 设置图片
             if (iconTransform != null)
             {
                 Image iconImage = iconTransform.GetComponent<Image>();
@@ -98,8 +138,7 @@ public class InventoryManager : MonoBehaviour
                 }
                 else
                 {
-                    iconImage.enabled = false; // 找不到图就隐藏
-                    Debug.LogWarning($"找不到图片: {item.iconName}");
+                    iconImage.enabled = false;
                 }
             }
         }

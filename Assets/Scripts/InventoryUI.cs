@@ -6,14 +6,13 @@ public class InventoryUI : MonoBehaviour
     public static InventoryUI Instance;
 
     [Header("背包预制体")]
-    public GameObject inventoryPrefab; // 把你的背包预制体拖到这里
+    public GameObject inventoryPrefab;
 
-    private GameObject inventoryInstance; // 运行时实例化的背包对象
-    private bool isOpen = false; // 背包是否打开
+    private GameObject inventoryInstance;
+    private bool isOpen = false;
 
     private void Awake()
     {
-        // 单例模式，防止场景切换时重复生成
         if (Instance == null)
         {
             Instance = this;
@@ -30,13 +29,13 @@ public class InventoryUI : MonoBehaviour
     {
         if (inventoryPrefab != null)
         {
-            // 1. 实例化背包预制体
+            // 1. 实例化
             inventoryInstance = Instantiate(inventoryPrefab);
 
-            // 【修改点一：设为子物体】让背包跟着 GameManager 跨场景保留
+            // 2. 跨场景保留（设为子物体）
             inventoryInstance.transform.SetParent(this.transform, false);
 
-            // 【修改点四：重置位置】强制归零位置和缩放，防止 UI 飘到屏幕外
+            // 3. 重置位置
             RectTransform rect = inventoryInstance.GetComponent<RectTransform>();
             if (rect != null)
             {
@@ -45,31 +44,15 @@ public class InventoryUI : MonoBehaviour
                 rect.anchoredPosition = Vector2.zero;
             }
 
-            inventoryInstance.SetActive(false); // 初始状态隐藏
+            inventoryInstance.SetActive(false); // 初始隐藏
 
-            // 2. 精准查找名字叫 "cancel" 的按钮（支持多层级查找）
+            // 4. 自动找 cancel 按钮绑定退出
             Transform cancelBtnTransform = FindChildByName(inventoryInstance.transform, "cancel");
-
             if (cancelBtnTransform != null)
             {
                 Button closeBtn = cancelBtnTransform.GetComponent<Button>();
-                if (closeBtn != null)
-                {
-                    closeBtn.onClick.AddListener(CloseInventory);
-                }
-                else
-                {
-                    Debug.LogError("找到了名为 'cancel' 的物体，但它身上没有挂载 Button 组件！");
-                }
+                if (closeBtn != null) closeBtn.onClick.AddListener(CloseInventory);
             }
-            else
-            {
-                Debug.LogError("在背包预制体中找不到名字叫 'cancel' 的物体！请检查名字大小写是否一致。");
-            }
-        }
-        else
-        {
-            Debug.LogError("背包预制体没有赋值！请在 Inspector 面板拖入 inventoryPrefab");
         }
     }
 
@@ -77,7 +60,6 @@ public class InventoryUI : MonoBehaviour
     {
         if (inventoryInstance == null) return;
 
-        // 监听 E 键
         if (Input.GetKeyDown(KeyCode.E))
         {
             ToggleInventory();
@@ -96,9 +78,9 @@ public class InventoryUI : MonoBehaviour
 
         isOpen = true;
         inventoryInstance.SetActive(true);
-        Time.timeScale = 0f; // 暂停游戏时间
+        Time.timeScale = 0f;
 
-        // 每次打开背包时，强制刷新一次数据，确保显示最新物品
+        // 打开时刷新数据
         if (InventoryManager.Instance != null)
         {
             InventoryManager.Instance.RefreshInventoryUI();
@@ -111,35 +93,24 @@ public class InventoryUI : MonoBehaviour
 
         isOpen = false;
         inventoryInstance.SetActive(false);
-        Time.timeScale = 1f; // 恢复游戏时间
+        Time.timeScale = 1f;
     }
 
     private void OnDestroy()
     {
-        Time.timeScale = 1f; // 安全机制：防止编辑器卡死
+        Time.timeScale = 1f;
     }
 
-    /// <summary>
-    /// 递归查找子物体（无论嵌套多深都能找到）
-    /// </summary>
+    // 递归查找子物体
     private Transform FindChildByName(Transform parent, string childName)
     {
-        // 遍历所有子物体
         foreach (Transform child in parent)
         {
-            // 如果名字匹配，直接返回
-            if (child.name == childName)
-            {
-                return child;
-            }
+            if (child.name == childName) return child;
 
-            // 如果没有匹配，去它的子物体里继续找
             Transform result = FindChildByName(child, childName);
-            if (result != null)
-            {
-                return result;
-            }
+            if (result != null) return result;
         }
-        return null; // 没找到返回空
+        return null;
     }
 }

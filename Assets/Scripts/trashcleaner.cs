@@ -3,10 +3,6 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-/// <summary>
-/// 挂在带 Sprite + Collider2D 的静态物体上（Collider 不勾 Is Trigger）。
-/// 玩家碰撞到它 → 标记可交互 → 按 Enter → 物体消失并发全局通知。
-/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class TouchDisappearNotifier : MonoBehaviour
 {
@@ -16,8 +12,8 @@ public class TouchDisappearNotifier : MonoBehaviour
     [SerializeField] private string toucherTag = "Player";
 
     [Header("交互按键")]
-    [SerializeField] private KeyCode confirmKey = KeyCode.Return;   // 主键盘 Enter
-    [SerializeField] private KeyCode confirmKeyAlt = KeyCode.KeypadEnter; // 小键盘 Enter
+    [SerializeField] private KeyCode confirmKey = KeyCode.Return;
+    [SerializeField] private KeyCode confirmKeyAlt = KeyCode.KeypadEnter;
 
     [Header("消失设置")]
     [SerializeField] private bool destroySelf = true;
@@ -26,7 +22,14 @@ public class TouchDisappearNotifier : MonoBehaviour
     [Header("通知参数")]
     [SerializeField] private string noticeKey = "object_touched";
 
-    // 当前是否有玩家贴着
+    // ================= 【新增：物品数据】 =================
+    [Header("掉落物品数据（对接背包）")]
+    [SerializeField] private string itemId = "item_01";
+    [SerializeField] private string itemName = "神秘物品";
+    [SerializeField] private string iconName = "DefaultIcon";
+    [SerializeField] private int itemAmount = 1;
+    // =======================================================
+
     private GameObject _toucher;
     private bool _fired;
 
@@ -71,7 +74,17 @@ public class TouchDisappearNotifier : MonoBehaviour
 
         ShowPrompt(false);
 
-        // 全局通知
+        // ================= 【对接背包】 =================
+        if (InventoryManager.Instance != null)
+        {
+            InventoryManager.Instance.AddItem(itemId, itemName, iconName, itemAmount);
+        }
+        else
+        {
+            Debug.LogWarning("背包系统未初始化，找不到 InventoryManager！");
+        }
+        // ================================================
+
         OnTouched?.Invoke(this, _toucher);
         TouchNoticeBus.Publish(new TouchNotice(noticeKey, gameObject, _toucher));
 
@@ -82,12 +95,9 @@ public class TouchDisappearNotifier : MonoBehaviour
         }
     }
 
-    // ================= 提示对接区（留空，对接你搭档的系统）=================
     private void ShowPrompt(bool show)
     {
-        // TODO: 调用搭档的提示 UI，例如：
-        // if (show) PromptUI.Instance.Show("按 Enter 拾取");
-        // else      PromptUI.Instance.Hide();
+        if (show) Debug.Log("按 Enter 拾取物品");
+        else Debug.Log("离开了物品");
     }
-    // =======================================================================
 }

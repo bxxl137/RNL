@@ -5383,6 +5383,10 @@ MonoBehaviour:
   destroySelf: 1
   destroyDelay: 0
   noticeKey: object_touched
+  itemId: item_01
+  itemName: "\u5FAE\u5149\u788E\u72471"
+  iconName: Glow_Shard
+  itemAmount: 1
 --- !u!1 &795840670
 GameObject:
   m_ObjectHideFlags: 0
