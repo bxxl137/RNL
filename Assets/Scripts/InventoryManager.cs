@@ -3,10 +3,13 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 using System.IO;
+using System;
+
 
 public class InventoryManager : MonoBehaviour
 {
     public static InventoryManager Instance;
+    public static event Action<string> OnItemAdded;
 
     [Header("UI 设置")]
     public Transform contentParent;       // 拖入 ScrollView 的 Content
@@ -58,6 +61,7 @@ public class InventoryManager : MonoBehaviour
             Canvas.ForceUpdateCanvases();
             scrollRect.verticalNormalizedPosition = 0f;
         }
+        OnItemAdded?.Invoke($"获得 {itemName} x{amount}");
         return true;
     }
 
