@@ -1049,6 +1049,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenuSceneName: StartScene
+  settingsSceneName: SettingScene
+  enableEscForSettings: 1
 --- !u!114 &700359020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1062,7 +1064,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryPrefab: {fileID: 4085345690343206566, guid: 7ccabbee13faf404c8e292655e96cfb2, type: 3}
-  closeButton: {fileID: 0}
 --- !u!1 &854738811
 GameObject:
   m_ObjectHideFlags: 0
