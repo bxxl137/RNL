@@ -6060,6 +6060,7 @@ GameObject:
   - component: {fileID: 1255333227}
   - component: {fileID: 1255333229}
   - component: {fileID: 1255333228}
+  - component: {fileID: 1255333230}
   m_Layer: 0
   m_Name: upfloor
   m_TagString: Untagged
@@ -6076,8 +6077,8 @@ Transform:
   m_GameObject: {fileID: 1255333226}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1411.26, y: -534.05, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 1411.26, y: -534.0296, z: 0}
+  m_LocalScale: {x: 1, y: 1.0408, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1544223375}
@@ -6125,7 +6126,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 3, y: 8}
+  m_Size: {x: 3, y: 7}
   m_EdgeRadius: 0
 --- !u!212 &1255333229
 SpriteRenderer:
@@ -6179,6 +6180,29 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1255333230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1255333226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f03f3333bb0148e49afae8dc5a33db13, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  letterboxLock: {fileID: 1609293492}
+  toastUI: {fileID: 2098524869}
+  rewardItemId: item_01
+  rewardItemName: "\u5FAE\u5149\u788E\u7247 1"
+  rewardIconName: Glow_Shard
+  rewardAmount: 2
+  toastMessage: "\u83B7\u5F97\u4E86\u4E00\u5F20\u544A\u793A"
+  rewardGivenKey: upfloor_reward_given
+  nextSceneName: Secondfloor
+  confirmKey: 282
+  confirmKeyAlt: 271
 --- !u!1 &1314400067
 GameObject:
   m_ObjectHideFlags: 0
@@ -7380,8 +7404,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: bag added
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 22ca5f83e1681a045a8716cde44abe74, type: 2}
+  m_sharedMaterial: {fileID: 2342742517093823959, guid: 22ca5f83e1681a045a8716cde44abe74, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
