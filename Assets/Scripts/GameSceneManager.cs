@@ -13,135 +13,171 @@ public class GameSceneManager : MonoBehaviour
 {
     public static GameSceneManager Instance;
 
+    // ★ 影子标志：场景重新加载产生的新实例会被标记为影子
+    private bool isShadow = false;
+
     private Stack<string> overlayStack = new Stack<string>();
 
     [Header("基础配置")]
     public string mainMenuSceneName = "StartScene";
 
-    [Header("弹窗场景名")]
-    public string settingsSceneName = "SettingsScene";
+    [Header("暂停场景")]
+    public string pauseSceneName = "PauseScene";
 
-    [Header("快捷键")]
-    public bool enableEscForSettings = true;
+    [Header("ESC 快捷键")]
+    public bool enableEscForPause = true;
+
+    [Header("暂停时冻结时间")]
+    public bool freezeTimeOnPause = true;
 
     [Header("转场冷却")]
-    [Tooltip("两次转场之间最短间隔，防止连按导致状态错乱")]
     public float transitionCooldown = 0.3f;
 
     private string currentBaseScene;
     private float lastTransitionTime = -999f;
 
+    // ===== 对外查询接口 =====
+    // 影子也转发到真正实例，保证 InventoryUI 等外部调用拿到正确状态
+    public bool IsInMainMenu => isShadow ? Instance.IsInMainMenu
+                                         : (currentBaseScene == mainMenuSceneName);
+
+    public bool IsPauseOpen => isShadow ? Instance.IsPauseOpen : CheckPauseOpen();
+
+    private bool CheckPauseOpen()
+    {
+        if (string.IsNullOrEmpty(pauseSceneName)) return false;
+        Scene s = SceneManager.GetSceneByName(pauseSceneName);
+        return s.IsValid() && s.isLoaded;
+    }
+
     private void Awake()
     {
+        currentBaseScene = SceneManager.GetActiveScene().name;
+
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else
+        else if (Instance != this)
         {
-            Destroy(gameObject);
-            return;
+            // ★ 场景重新加载时产生的新实例：不销毁自己，退化为"影子"
+            //   - Inspector 拖拽的按钮引用会指向这个影子，点击时转发给 Instance
+            //   - 影子不 DontDestroyOnLoad，会随 StartScene 一起正常卸载
+            isShadow = true;
+            // 注意：这里不要 Destroy(gameObject)，也不要 DontDestroyOnLoad
         }
-        currentBaseScene = SceneManager.GetActiveScene().name;
     }
 
-    private void OnEnable() => SceneManager.sceneLoaded += OnSceneLoaded;
-    private void OnDisable() => SceneManager.sceneLoaded -= OnSceneLoaded;
+    private void OnEnable()
+    {
+        if (isShadow) return;   // 影子不订阅场景事件
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        if (isShadow) return;
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        if (isShadow) return;
         if (mode == LoadSceneMode.Single)
         {
             currentBaseScene = scene.name;
             overlayStack.Clear();
+            if (freezeTimeOnPause) Time.timeScale = 1f;
         }
     }
 
     private void Update()
     {
-        if (enableEscForSettings && Input.GetKeyDown(KeyCode.Escape))
-            ToggleSettings();
+        if (isShadow) return;   // 影子不处理 ESC，避免重复
+        if (enableEscForPause && Input.GetKeyDown(KeyCode.Escape))
+            HandleEscape();
     }
 
-    // ===================== 设置页开关 =====================
-
-    public void ToggleSettings()
+    // ===================== ESC 统一入口 =====================
+    private void HandleEscape()
     {
+        if (InventoryUI.Instance != null && InventoryUI.Instance.IsOpen)
+        {
+            InventoryUI.Instance.CloseInventory();
+            if (!IsInMainMenu && IsCooldownReady())
+                OpenPause();
+            return;
+        }
+
         if (!IsCooldownReady()) return;
 
-        if (IsSettingsOpen())
-            CloseSettings();
-        else
-            OpenSettings();
+        if (overlayStack.Count > 0)
+        {
+            string top = overlayStack.Peek();
+            if (top == pauseSceneName) ClosePause();
+            else Back();
+            return;
+        }
+
+        if (IsInMainMenu) return;
+        OpenPause();
     }
 
-    public void OpenSettings()
+    // ===================== 打开 / 关闭 PauseScene =====================
+    public void OpenPause()
     {
+        if (isShadow) { Instance.OpenPause(); return; }
+
         if (!IsCooldownReady()) return;
-        if (IsSettingsOpen()) return;
-        OpenOverlay(settingsSceneName);
+        if (CheckPauseOpen()) return;
+        if (IsInMainMenu) return;
+        if (overlayStack.Contains(pauseSceneName)) return;
+
+        PlayWithTransition(() =>
+        {
+            overlayStack.Push(pauseSceneName);
+            SceneManager.LoadScene(pauseSceneName, LoadSceneMode.Additive);
+            if (freezeTimeOnPause) Time.timeScale = 0f;
+        });
     }
 
-    public void CloseSettings()
+    public void ClosePause()
     {
-        if (!IsSettingsOpen()) return;
+        if (isShadow) { Instance.ClosePause(); return; }
 
-        if (overlayStack.Count > 0 && overlayStack.Peek() == settingsSceneName)
-        {
-            Back();
-        }
-        else
-        {
-            // 兜底：栈里没有但场景还在，直接卸载并把栈里残留删掉
-            if (!IsCooldownReady()) return;
-            PlayWithTransition(() =>
-            {
-                RemoveFromOverlayStack(settingsSceneName);
-                SceneManager.UnloadSceneAsync(settingsSceneName);
-            });
-        }
-    }
+        if (!CheckPauseOpen()) return;
+        if (!IsCooldownReady()) return;
 
-    private bool IsSettingsOpen()
-    {
-        if (string.IsNullOrEmpty(settingsSceneName)) return false;
-        Scene s = SceneManager.GetSceneByName(settingsSceneName);
-        return s.IsValid() && s.isLoaded;
+        PlayWithTransition(() =>
+        {
+            string top = overlayStack.Pop();
+            SceneManager.UnloadSceneAsync(top);
+            if (freezeTimeOnPause) Time.timeScale = 1f;
+        });
     }
 
     private bool IsCooldownReady()
-    {
-        return Time.unscaledTime - lastTransitionTime >= transitionCooldown;
-    }
-
-    private void RemoveFromOverlayStack(string sceneName)
-    {
-        if (!overlayStack.Contains(sceneName)) return;
-        var list = new List<string>(overlayStack); // list[0] 是栈顶
-        list.Remove(sceneName);
-        overlayStack.Clear();
-        for (int i = list.Count - 1; i >= 0; i--)
-            overlayStack.Push(list[i]);
-    }
+        => Time.unscaledTime - lastTransitionTime >= transitionCooldown;
 
     // ===================== 场景切换 =====================
-
     public void LoadLevel(string levelName)
     {
+        if (isShadow) { Instance.LoadLevel(levelName); return; }
+
         if (!IsCooldownReady()) return;
         PlayWithTransition(() => SceneManager.LoadScene(levelName));
     }
 
     public void OpenOverlay(string sceneName)
     {
-        // 用栈判断去重，而不是 isLoaded
+        if (isShadow) { Instance.OpenOverlay(sceneName); return; }
+
         if (overlayStack.Contains(sceneName)) return;
         if (!IsCooldownReady()) return;
 
         PlayWithTransition(() =>
         {
-            // 回调内部再 push，保证“push + Load”是原子的
             if (overlayStack.Contains(sceneName)) return;
             overlayStack.Push(sceneName);
             SceneManager.LoadScene(sceneName, LoadSceneMode.Additive);
@@ -150,17 +186,20 @@ public class GameSceneManager : MonoBehaviour
 
     public void Back()
     {
+        if (isShadow) { Instance.Back(); return; }
+
         if (overlayStack.Count > 0)
         {
             if (!IsCooldownReady()) return;
             PlayWithTransition(() =>
             {
-                // ★ 关键修复：pop 放进回调内，和 Unload 一起执行
                 string top = overlayStack.Pop();
                 SceneManager.UnloadSceneAsync(top);
+                if (top == pauseSceneName && freezeTimeOnPause)
+                    Time.timeScale = 1f;
             });
         }
-        else if (currentBaseScene != mainMenuSceneName)
+        else if (!IsInMainMenu)
         {
             if (!IsCooldownReady()) return;
             PlayWithTransition(() => SceneManager.LoadScene(mainMenuSceneName));
@@ -173,22 +212,20 @@ public class GameSceneManager : MonoBehaviour
 
     public void BackToMainMenu()
     {
+        if (isShadow) { Instance.BackToMainMenu(); return; }
+
         if (!IsCooldownReady()) return;
         PlayWithTransition(() =>
         {
             overlayStack.Clear();
             SceneManager.LoadScene(mainMenuSceneName);
+            if (freezeTimeOnPause) Time.timeScale = 1f;
         });
     }
 
-    /// <summary>
-    /// 统一入口：只做“冷却 + 转发”，不再用 isTransitioning 拦截。
-    /// 即使 SceneChangeView 内部把请求丢弃，也不会污染栈状态。
-    /// </summary>
     private void PlayWithTransition(Action onBlacked)
     {
         lastTransitionTime = Time.unscaledTime;
-
         if (SceneChangeView.Instance != null)
             SceneChangeView.Instance.Play(onBlacked);
         else

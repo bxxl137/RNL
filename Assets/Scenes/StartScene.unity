@@ -343,6 +343,7 @@ GameObject:
   - component: {fileID: 242513812}
   - component: {fileID: 242513811}
   - component: {fileID: 242513810}
+  - component: {fileID: 242513814}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -433,6 +434,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &242513814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 242513809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5a7d572e0cd47f43a3e4101a6c45950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &286409483
 GameObject:
   m_ObjectHideFlags: 0
@@ -1049,8 +1062,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainMenuSceneName: StartScene
-  settingsSceneName: SettingScene
-  enableEscForSettings: 1
+  pauseSceneName: PauseScene
+  enableEscForPause: 1
+  freezeTimeOnPause: 1
+  transitionCooldown: 0.3
 --- !u!114 &700359020
 MonoBehaviour:
   m_ObjectHideFlags: 0

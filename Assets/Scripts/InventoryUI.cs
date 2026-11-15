@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;   // 兜底判断场景名用
 
 public class InventoryUI : MonoBehaviour
 {
@@ -10,6 +11,9 @@ public class InventoryUI : MonoBehaviour
 
     private GameObject inventoryInstance;
     private bool isOpen = false;
+
+    // ★ 对外暴露，供 GameSceneManager 判断
+    public bool IsOpen => isOpen;
 
     private void Awake()
     {
@@ -29,13 +33,9 @@ public class InventoryUI : MonoBehaviour
     {
         if (inventoryPrefab != null)
         {
-            // 1. 实例化
             inventoryInstance = Instantiate(inventoryPrefab);
-
-            // 2. 跨场景保留（设为子物体）
             inventoryInstance.transform.SetParent(this.transform, false);
 
-            // 3. 重置位置
             RectTransform rect = inventoryInstance.GetComponent<RectTransform>();
             if (rect != null)
             {
@@ -44,9 +44,8 @@ public class InventoryUI : MonoBehaviour
                 rect.anchoredPosition = Vector2.zero;
             }
 
-            inventoryInstance.SetActive(false); // 初始隐藏
+            inventoryInstance.SetActive(false);
 
-            // 4. 自动找 cancel 按钮绑定退出
             Transform cancelBtnTransform = FindChildByName(inventoryInstance.transform, "cancel");
             if (cancelBtnTransform != null)
             {
@@ -59,11 +58,7 @@ public class InventoryUI : MonoBehaviour
     private void Update()
     {
         if (inventoryInstance == null) return;
-
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            ToggleInventory();
-        }
+        if (Input.GetKeyDown(KeyCode.E)) ToggleInventory();
     }
 
     public void ToggleInventory()
@@ -76,15 +71,15 @@ public class InventoryUI : MonoBehaviour
     {
         if (isOpen || inventoryInstance == null) return;
 
+        // ★ StartScene 禁止打开背包
+        if (IsInMainMenu()) return;
+
         isOpen = true;
         inventoryInstance.SetActive(true);
         Time.timeScale = 0f;
 
-        // 打开时刷新数据
         if (InventoryManager.Instance != null)
-        {
             InventoryManager.Instance.RefreshInventoryUI();
-        }
     }
 
     public void CloseInventory()
@@ -93,7 +88,21 @@ public class InventoryUI : MonoBehaviour
 
         isOpen = false;
         inventoryInstance.SetActive(false);
-        Time.timeScale = 1f;
+
+        // ★ 如果 PauseScene 还开着，不要恢复时间（否则 Pause 会失效）
+        bool pauseStillOpen =
+            GameSceneManager.Instance != null && GameSceneManager.Instance.IsPauseOpen;
+        if (!pauseStillOpen) Time.timeScale = 1f;
+    }
+
+    // ★ 主菜单判断：优先用 GameSceneManager，避免场景名硬编码
+    private bool IsInMainMenu()
+    {
+        if (GameSceneManager.Instance != null)
+            return GameSceneManager.Instance.IsInMainMenu;
+
+        // 兜底：直接测 StartScene 时 GameSceneManager 可能没起来
+        return SceneManager.GetActiveScene().name == "StartScene";
     }
 
     private void OnDestroy()
@@ -101,13 +110,11 @@ public class InventoryUI : MonoBehaviour
         Time.timeScale = 1f;
     }
 
-    // 递归查找子物体
     private Transform FindChildByName(Transform parent, string childName)
     {
         foreach (Transform child in parent)
         {
             if (child.name == childName) return child;
-
             Transform result = FindChildByName(child, childName);
             if (result != null) return result;
         }

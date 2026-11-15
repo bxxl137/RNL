@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Secondfloor.unity
     guid: 1e48d191a2854564da05635746556d16
+  - enabled: 1
+    path: Assets/Scenes/PauseScene.unity
+    guid: 897bac494e863ba4fadbfd850ef59973
   m_configObjects: {}
