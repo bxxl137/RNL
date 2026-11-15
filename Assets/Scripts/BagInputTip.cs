@@ -50,6 +50,13 @@ public class BagInputTip : MonoBehaviour
         if (_routine != null) StopCoroutine(_routine);
         _routine = StartCoroutine(ShowRoutine(message));
     }
+    /// <summary>外部直接调用，弹出指定文字</summary>
+    public void ShowMessage(string msg)
+    {
+        if (_routine != null) StopCoroutine(_routine);
+        _routine = StartCoroutine(ShowRoutine(msg));
+    }
+
 
     private IEnumerator ShowRoutine(string message)
     {

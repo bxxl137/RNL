@@ -28,6 +28,9 @@ public class LetterboxLock : MonoBehaviour
 
     private bool _playerInside;
     private bool _done;
+    // 加在 LetterboxLockOpener 类里（_done 声明附近）
+    public bool IsClosed => _done;
+
 
     private void Awake()
     {
