@@ -124,12 +124,14 @@ public class InventoryManager : MonoBehaviour
             Transform iconTransform = row.transform.Find("IconImage");
             Transform textTransform = row.transform.Find("ItemText");
 
+            // 设置文字
             if (textTransform != null)
             {
                 TextMeshProUGUI rowText = textTransform.GetComponent<TextMeshProUGUI>();
                 rowText.text = $"{item.itemName}  x{item.amount}";
             }
 
+            // 设置图片
             if (iconTransform != null)
             {
                 Image iconImage = iconTransform.GetComponent<Image>();
@@ -145,6 +147,36 @@ public class InventoryManager : MonoBehaviour
                     iconImage.enabled = false;
                 }
             }
+
+            // ================== 【新增：绑定点击选中事件】 ==================
+            // 1. 确保行物体有一个按钮组件用于接收点击
+            Button rowBtn = row.GetComponent<Button>();
+            if (rowBtn == null)
+            {
+                rowBtn = row.AddComponent<Button>();
+                // 如果没有Image，加一个透明的Image接收点击
+                Image targetImg = row.GetComponent<Image>();
+                if (targetImg == null)
+                {
+                    targetImg = row.AddComponent<Image>();
+                    targetImg.color = new Color(0, 0, 0, 0); // 全透明
+                }
+                rowBtn.targetGraphic = targetImg;
+            }
+
+            // 2. 清除原有的点击事件（防止刷新后重复绑定）
+            rowBtn.onClick.RemoveAllListeners();
+
+            // 3. 绑定新的点击事件，通知 ItemSelectionManager
+            string currentId = item.itemId; // 闭包捕获，防止所有按钮都绑定成最后一个物品
+            rowBtn.onClick.AddListener(() =>
+            {
+                if (ItemSelectionManager.Instance != null)
+                {
+                    ItemSelectionManager.Instance.SelectItem(currentId, row);
+                }
+            });
+            // ================================================================
         }
     }
 
