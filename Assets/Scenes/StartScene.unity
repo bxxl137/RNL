@@ -443,9 +443,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 242513809}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5a7d572e0cd47f43a3e4101a6c45950, type: 3}
+  m_Script: {fileID: 11500000, guid: a8b9c153ec76fd341a4928a46e889534, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startBtn: {fileID: 503198609}
+  continueBtn: {fileID: 1128348483}
+  settingsBtn: {fileID: 432726022}
+  quitBtn: {fileID: 1502149641}
+  gameSceneName: NeibourScene-firstfloor
+  settingsSceneName: SettingScene
 --- !u!1 &286409483
 GameObject:
   m_ObjectHideFlags: 0

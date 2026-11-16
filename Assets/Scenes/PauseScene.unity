@@ -380,6 +380,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   action: 0
   settingsSceneName: SettingScene
+  clickedSprite: {fileID: 0}
+  backDelay: 0.5
 --- !u!1 &298105429
 GameObject:
   m_ObjectHideFlags: 0
@@ -591,7 +593,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 154849, y: 38162}
+  m_AnchoredPosition: {x: 154849, y: 56916.996}
   m_SizeDelta: {x: 46531.14, y: 23838.99}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &793758907
@@ -606,8 +608,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa50994535d17964bb41d84f89c024f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  action: 0
+  action: 1
   settingsSceneName: SettingScene
+  clickedSprite: {fileID: 21300000, guid: 55f2c2c5e000a8043bc32cc23e4f4315, type: 3}
+  backDelay: 0.5
 --- !u!95 &793758908
 Animator:
   serializedVersion: 5
@@ -834,7 +838,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1143101543
 RectTransform:
   m_ObjectHideFlags: 0
@@ -852,7 +856,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 154849, y: 67937}
+  m_AnchoredPosition: {x: 154849, y: 56917}
   m_SizeDelta: {x: 46531.14, y: 23838.99}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1143101544
@@ -869,6 +873,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   action: 1
   settingsSceneName: SettingScene
+  clickedSprite: {fileID: 0}
+  backDelay: 0.5
 --- !u!95 &1143101545
 Animator:
   serializedVersion: 5
