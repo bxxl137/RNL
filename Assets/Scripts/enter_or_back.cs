@@ -14,12 +14,13 @@ public class UpFloorInteractor : MonoBehaviour
     [Header("引用")]
     [SerializeField] private LetterboxLock letterboxLock;  // letterbox/tiggerplace2
     [SerializeField] private BagInputTip toastUI;              // 玩家头顶的飘字脚本
+    [SerializeField] private wellpaperrepair wellpaperRepair;
 
     [Header("奖励设置")]
     [SerializeField] private string rewardItemId = "item_01";
     [SerializeField] private string rewardItemName = "微光碎片 1";
     [SerializeField] private string rewardIconName = "Glow_Shard";
-    [SerializeField] private int rewardAmount = 2;
+    [SerializeField] private int rewardAmount = 1;
 
     [Header("飘字内容")]
     [SerializeField] private string toastMessage = "获得了一张告示";
@@ -49,6 +50,10 @@ public class UpFloorInteractor : MonoBehaviour
         _playerInside = false;
     }
 
+    private void Awake()
+    {
+        PlayerPrefs.SetInt(rewardGivenKey, 0);//好痛苦啊啊啊，废了我的唯一性存档5555555555
+    }
     private void Update()
     {
         if (!_playerInside || _switching) return;
@@ -67,7 +72,7 @@ public class UpFloorInteractor : MonoBehaviour
             return;
         }
 
-        if (!letterboxLock.IsClosed)
+        if (!letterboxLock.IsClosed && !wellpaperRepair.repaired)
             GiveRewardOnce();
         else
             EnterNextScene();
@@ -96,7 +101,7 @@ public class UpFloorInteractor : MonoBehaviour
         if (!ok) return;
 
         // 2. 写入永久标记
-        PlayerPrefs.SetInt(rewardGivenKey, 1);
+        PlayerPrefs.SetInt(rewardGivenKey, 0);//一个存档只能领一次，如果要更改成每个存档都能领一次，可以改成 PlayerPrefs.SetInt(rewardGivenKey, 0)。
         PlayerPrefs.Save();
 
         // 3. 用方案 B 的飘字，覆盖掉 AddItem 自动触发的“获得 XXX x2”
