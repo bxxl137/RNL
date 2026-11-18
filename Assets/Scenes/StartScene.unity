@@ -2713,6 +2713,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2046127116}
   - component: {fileID: 2046127115}
+  - component: {fileID: 2046127117}
   m_Layer: 0
   m_Name: LightNetworkManager
   m_TagString: Untagged
@@ -2753,6 +2754,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2046127117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2046127114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a4a9dc898bd66e4a9b652af11b594b8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSceneName: NeibourScene-secondlevel
+  targetPointCount: 4
+  delayBeforeSwitch: 0.5
+  onlyOnce: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
