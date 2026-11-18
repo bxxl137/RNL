@@ -8,7 +8,7 @@ using UnityEngine;
 public class PlayerManager : MonoBehaviour
 {
     [Header("移动")]
-    public float moveSpeed = 4f;
+    public float moveSpeed = 6f;
 
     [Header("移动锁")]
     [SerializeField] private bool canMove = true;
@@ -76,8 +76,8 @@ public class PlayerManager : MonoBehaviour
         anim.SetFloat(FacingHash, lastFacing);
 
         // 翻转仍然用 SpriteRenderer
-        if (inputX > 0.01f)       sr.flipX = false;
-        else if (inputX < -0.01f) sr.flipX = true;
+        //if (inputX > 0.01f)       sr.flipX = false;
+        //else if (inputX < -0.01f) sr.flipX = true;
     }
 
     private void FixedUpdate()
