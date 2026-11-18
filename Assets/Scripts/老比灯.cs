@@ -4,48 +4,82 @@ using UnityEngine;
 
 /// <summary>
 /// 挂在触发区域物体上（Collider2D 需勾 Is Trigger）。
-/// 玩家进入区域时，向指定的 TMP 文字组件输出一句话。
+/// 第一次进入：播放台词。
+/// 再次进入且 day 已激活：把"微光碎片"加入背包。
 /// </summary>
 public class 老比灯 : MonoBehaviour
 {
     [Header("文字组件")]
-    [SerializeField] private TMP_Text targetText;   // 拖场景里的 TMP 文字（UGUI 或 3D 都可以）
+    [SerializeField] private TMP_Text targetText;
 
     [Header("台词")]
     [SerializeField] private string line = "楼下的灯也是这样的……";
 
     [Header("显示节奏")]
-    [SerializeField] private bool typewriter = true;      // 是否逐字显示
-    [SerializeField] private float charsPerSecond = 25f;  // 每秒字数
-    [SerializeField] private float holdTime = 2f;         // 全部显示后停留几秒
-    [SerializeField] private bool fadeOut = true;         // 是否淡出
+    [SerializeField] private bool typewriter = true;
+    [SerializeField] private float charsPerSecond = 25f;
+    [SerializeField] private float holdTime = 2f;
+    [SerializeField] private bool fadeOut = true;
+
+    [Header("场景状态")]
+    [Tooltip("拖 secondfloor/day，用来判断场景是否已切换")]
+    [SerializeField] private GameObject dayObject;
+
+    [Header("背包发放")]
+    [SerializeField] private string itemId = "shard_glow";
+    [SerializeField] private string itemName = "微光碎片";
+    [SerializeField] private string iconName = "shard_glow";
+    [SerializeField] private int addCount = 1;
 
     [Header("触发限制")]
-    [SerializeField] private bool onlyOnce = true;        // 只播一次
+    [SerializeField] private bool onlyOnce = true;      // 台词只播一次
+    [SerializeField] private bool grantOnlyOnce = true; // 碎片只发一次
 
     private Coroutine _routine;
-    private bool _played;
+    private bool _played;          // 台词是否播过
+    private bool _enteredBefore;   // 是否已经进过区域
+    private bool _granted;         // 碎片是否已发放
 
     private void Awake()
     {
-        // 初始隐藏，避免场景里露出一坨默认文字
         if (targetText != null) SetAlpha(targetText, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (!other.CompareTag("Player")) return;
-        if (onlyOnce && _played) return;
-        if (targetText == null)
+
+        // —— 台词分支：第一次进入播放 ——
+        if (!(onlyOnce && _played) && targetText != null)
         {
-            Debug.LogWarning("[TriggerLineSpeaker] 没有指定 TMP 文字组件");
+            _played = true;
+            if (_routine != null) StopCoroutine(_routine);
+            _routine = StartCoroutine(PlayRoutine());
+        }
+
+        // —— 碎片分支：第二次及以后进入，且 day 已激活 ——
+        if (grantOnlyOnce && _granted)
+        {
+            _enteredBefore = true;
             return;
         }
 
-        _played = true;
+        if (!_enteredBefore)
+        {
+            // 第一次进入，只记录，不发碎片
+            _enteredBefore = true;
+            return;
+        }
 
-        if (_routine != null) StopCoroutine(_routine);
-        _routine = StartCoroutine(PlayRoutine());
+        // 第二次及以后
+        bool dayActive = dayObject != null && dayObject.activeInHierarchy;
+        if (!dayActive)
+        {
+            Debug.Log("[微光碎片] day 尚未激活，本次不发");
+            return;
+        }
+
+        GrantShard();
     }
 
     private IEnumerator PlayRoutine()
@@ -72,10 +106,8 @@ public class 老比灯 : MonoBehaviour
             targetText.text = line;
         }
 
-        // 停留
         yield return new WaitForSeconds(holdTime);
 
-        // 淡出
         if (fadeOut)
         {
             float t = 0f, dur = 0.6f;
@@ -92,6 +124,29 @@ public class 老比灯 : MonoBehaviour
         _routine = null;
     }
 
+    private void GrantShard()
+    {
+        _granted = true;
+
+        if (InventoryManager.Instance == null)
+        {
+            Debug.LogWarning("[微光碎片] InventoryManager.Instance 为空，检查背包管理器是否已加载");
+            return;
+        }
+
+        bool ok = InventoryManager.Instance.AddItem(
+            itemId,
+            itemName,
+            iconName,
+            addCount
+        );
+
+        if (ok)
+            Debug.Log($"[微光碎片] 已加入背包：{itemName} ×{addCount}");
+        else
+            Debug.LogWarning("[微光碎片] 添加失败");
+    }
+
     private void SetAlpha(TMP_Text txt, float a)
     {
         Color c = txt.color;
@@ -99,4 +154,3 @@ public class 老比灯 : MonoBehaviour
         txt.color = c;
     }
 }
-
