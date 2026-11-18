@@ -2703,6 +2703,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1970552160}
   m_CullTransparentMesh: 1
+--- !u!1 &2046127114
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2046127116}
+  - component: {fileID: 2046127115}
+  m_Layer: 0
+  m_Name: LightNetworkManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2046127115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2046127114}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e31f694318e1dc14cbce76fb46a4ba34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lightPointPrefab: {fileID: 5780193872408572925, guid: 432e2a63aa3400045a34f00dc4d96af0, type: 3}
+  lightBeamPrefab: {fileID: 8283741871350265631, guid: a3d0a82903ee12d4c9276546a0c0654c, type: 3}
+  playerTransform: {fileID: 0}
+  pointOffset: {x: 0, y: 0.5, z: 0}
+  randomJitter: 0.15
+  beamWidth: 0.06
+--- !u!4 &2046127116
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2046127114}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -9.018129, y: -2.2740347, z: 0.040160485}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -2713,3 +2763,4 @@ SceneRoots:
   - {fileID: 544402723}
   - {fileID: 700359018}
   - {fileID: 1489977005}
+  - {fileID: 2046127116}

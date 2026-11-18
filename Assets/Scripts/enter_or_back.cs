@@ -72,7 +72,7 @@ public class UpFloorInteractor : MonoBehaviour
             return;
         }
 
-        if (!letterboxLock.IsClosed && !wellpaperRepair.repaired)
+        if (!letterboxLock.IsClosed)
             GiveRewardOnce();
         else
             EnterNextScene();

@@ -234,8 +234,8 @@ Transform:
   m_GameObject: {fileID: 233173842}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.29, y: -4.4052, z: -10.559449}
-  m_LocalScale: {x: 2.1403, y: 5.7660375, z: 1}
+  m_LocalPosition: {x: 11.0567, y: -4.4052, z: -10.559449}
+  m_LocalScale: {x: 6.6066265, y: 5.7660375, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1905934056}
@@ -355,7 +355,13 @@ MonoBehaviour:
   charsPerSecond: 25
   holdTime: 2
   fadeOut: 1
+  dayObject: {fileID: 1672309699}
+  itemId: item_04
+  itemName: "\u5FAE\u5149\u788E\u72474"
+  iconName: Glow_shard
+  addCount: 1
   onlyOnce: 1
+  grantOnlyOnce: 1
 --- !u!1 &287437124
 GameObject:
   m_ObjectHideFlags: 0
@@ -413,7 +419,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u4F60\u5F97\u5230\u4E86\u4E00\u5F20\u4F20\u5355...\u7535\u8DEF\u7EF4\u4FEE..."
+  m_text: "\u6628\u5929\u6709\u4EBA\u6253\u7535\u8BDD\u62A5\u4FEE\u8FD9\u91CC\u548C\u697C\u4E0B\u7684\u706F\n\u6211\u4EEC\u68C0\u67E5\u540E\u53D1\u73B0\u662F\u7535\u8DEF\u8001\u5316\u7684\u95EE\u9898\uFF0C\u800C\u4E14\u5DF2\u7ECF\u5F88\u4E45\u4E86\u554A\n\u73B0\u5728\u5DF2\u7ECF\u4FEE\u597D\u4E86\u3002\u4E0B\u6B21\u53D1\u73B0\u8BBE\u5907\u6545\u969C\u7684\u8BDD\u4E00\u5B9A\u8981\u53CA\u65F6\u53CD\u9988\n\u4E0D\u7136\u6307\u4E0D\u5B9A\u4F1A\u51FA\u4EC0\u4E48\u610F\u5916\u5462"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3dd929d2cc0e83245a66398b8741ad28, type: 2}
   m_sharedMaterial: {fileID: -2626663008814293662, guid: 3dd929d2cc0e83245a66398b8741ad28, type: 2}
@@ -1022,7 +1028,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 994100393}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -1253,6 +1259,96 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1218331990
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1218331991}
+  - component: {fileID: 1218331992}
+  - component: {fileID: 1218331993}
+  m_Layer: 0
+  m_Name: tiggerplace7
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1218331991
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218331990}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 6.09, y: -5.46, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1625343082}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!61 &1218331992
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218331990}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 3, y: 7}
+  m_EdgeRadius: 0
+--- !u!114 &1218331993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218331990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2db07b808eb5f74d91caed0cac26f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1288369528
 GameObject:
   m_ObjectHideFlags: 0
@@ -1630,6 +1726,10 @@ MonoBehaviour:
   confirmKey: 13
   confirmKeyAlt: 271
   onlyOnce: 1
+  itemId: item_03
+  itemName: "\u5FAE\u5149\u788E\u72473"
+  iconName: Glow_Shard
+  itemAmount: 1
 --- !u!1 &1486130930
 GameObject:
   m_ObjectHideFlags: 0
@@ -1841,6 +1941,7 @@ GameObject:
   - component: {fileID: 1625120732}
   - component: {fileID: 1625120733}
   - component: {fileID: 1625120734}
+  - component: {fileID: 1625120735}
   m_Layer: 0
   m_Name: tiggerplace6
   m_TagString: Untagged
@@ -1960,6 +2061,69 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &1625120735
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625120731}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ac8c2327aba7f4db65c6803b0b60ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dayObject: {fileID: 1672309699}
+  humanNpc: {fileID: 994100393}
+  requiredItemId: item_03
+  requiredItemName: "\u5FAE\u5149\u788E\u72473"
+  requiredAmount: 1
+  confirmKey: 13
+  confirmKeyAlt: 271
+  maskPanel: {fileID: 1288369528}
+  hideMaskOnExit: 1
+  targetText: {fileID: 287437126}
+  lines:
+  - text: "\u6628\u5929\u6709\u4EBA\u6253\u7535\u8BDD\u62A5\u4FEE\u8FD9\u91CC\u548C\u697C\u4E0B\u7684\u706F\n\u6211\u4EEC\u68C0\u67E5\u540E\u53D1\u73B0\u662F\u7535\u8DEF\u8001\u5316\u7684\u95EE\u9898\uFF0C\u800C\u4E14\u5DF2\u7ECF\u5F88\u4E45\u4E86\u554A\n\u73B0\u5728\u5DF2\u7ECF\u4FEE\u597D\u4E86\u3002\u4E0B\u6B21\u53D1\u73B0\u8BBE\u5907\u6545\u969C\u7684\u8BDD\u4E00\u5B9A\u8981\u53CA\u65F6\u53CD\u9988\n\u4E0D\u7136\u6307\u4E0D\u5B9A\u4F1A\u51FA\u4EC0\u4E48\u610F\u5916\u5462"
+    color: {r: 0.9308176, g: 0.7522778, b: 0.09073993, a: 0}
+    gapAfter: 0
+    typewriter: 1
+    charsPerSecond: 10
+  defaultCharsPerSecond: 22
+  holdTime: 1.5
+  onlyOnce: 1
+--- !u!1 &1625343081
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1625343082}
+  m_Layer: 0
+  m_Name: second_one
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1625343082
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625343081}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.814129, y: -0.094519615, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1218331991}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1672309699
 GameObject:
   m_ObjectHideFlags: 0
@@ -2237,3 +2401,4 @@ SceneRoots:
   - {fileID: 686043021}
   - {fileID: 1949724137}
   - {fileID: 1891634811}
+  - {fileID: 1625343082}
