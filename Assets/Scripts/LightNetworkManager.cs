@@ -31,6 +31,7 @@ public class LightNetworkManager : MonoBehaviour
 
     // 当前场景中的光点
     private readonly List<GameObject> _points = new List<GameObject>();
+    public int PointCount => _points.Count;
     // 当前场景中的光线（与点的连线配对生成，每次重建）
     private readonly List<GameObject> _beams = new List<GameObject>();
 

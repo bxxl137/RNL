@@ -1350,6 +1350,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetSceneName: NeibourScene-firstfloor
+  requiredItemId: item_04
+  requiredItemName: "\u5FAE\u5149\u788E\u72474"
+  requiredAmount: 1
   confirmKey: 13
   confirmKeyAlt: 271
   onlyOnce: 1
@@ -2293,6 +2296,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interval: 1
+  unlockItemId: item_03
+  unlockItemName: "\u5FAE\u5149\u788E\u72473"
 --- !u!1 &1949724134
 GameObject:
   m_ObjectHideFlags: 0
