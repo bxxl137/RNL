@@ -1017,6 +1017,7 @@ GameObject:
   - component: {fileID: 700359017}
   - component: {fileID: 700359019}
   - component: {fileID: 700359020}
+  - component: {fileID: 700359021}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -1053,6 +1054,7 @@ Transform:
   m_Children:
   - {fileID: 542133488}
   - {fileID: 885478793}
+  - {fileID: 1489977005}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &700359019
@@ -1085,6 +1087,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventoryPrefab: {fileID: 4085345690343206566, guid: 7ccabbee13faf404c8e292655e96cfb2, type: 3}
+--- !u!114 &700359021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 700359016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 30e0bbb6d349c7442b06705228d6edec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSceneName: NeibourScene-firstfloor
+  tip: {fileID: 0}
+  messages:
+  - "\u6309\u4E0B AD \u6765\u8FDB\u884C\u79FB\u52A8"
+  - "\u6309\u4E0B E \u6253\u5F00\u80CC\u5305"
+  - "\u6309\u4E0B ESC \u6253\u5F00\u6682\u505C\u83DC\u5355"
+  - "\u6309\u4E0B Enter \u4E0E\u7269\u54C1\u8FDB\u884C\u4EA4\u4E92"
+  interval: 3
 --- !u!1 &854738811
 GameObject:
   m_ObjectHideFlags: 0
@@ -1949,12 +1971,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1489977003}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1391.0527, y: 1546.8826, z: -19.094673}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 1393.1846, y: 1549.3489, z: -19.85046}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 700359018}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1502149639
 GameObject:
@@ -2778,6 +2800,5 @@ SceneRoots:
   - {fileID: 1209962957}
   - {fileID: 242513813}
   - {fileID: 544402723}
-  - {fileID: 1489977005}
   - {fileID: 2046127116}
   - {fileID: 700359018}
