@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+
 /// <summary>
 /// 第二关底部对话框。点击/Enter/空格推进，逐字显示。
 /// </summary>
@@ -15,6 +16,7 @@ public class Level2DialogueUI : MonoBehaviour
     private TextMeshProUGUI _speaker;
     private TextMeshProUGUI _arrow;
 
+
     private List<Level2Line> _lines;
     private int _index;
     private bool _typing;
@@ -23,11 +25,14 @@ public class Level2DialogueUI : MonoBehaviour
     private Coroutine _routine;
     private Action _onDone;
 
+
     public bool IsOpen { get; private set; }
+
 
     public void Build(Transform canvas, TMP_FontAsset font, Sprite boxSprite)
     {
         _font = font;
+
 
         _root = Level2UI.Create("DialogueRoot", canvas);
         RectTransform rt = _root.GetComponent<RectTransform>();
@@ -37,8 +42,10 @@ public class Level2DialogueUI : MonoBehaviour
         rt.anchoredPosition = new Vector2(0f, 24f);
         rt.sizeDelta = new Vector2(1340f, 290f);
 
+
         Level2UI.MakeImage(_root.transform, "Box", boxSprite, new Vector2(1340f, 290f), Vector2.zero,
                            Color.white, false, false);
+
 
         GameObject speakerGo = Level2UI.Create("Speaker", _root.transform);
         _speaker = speakerGo.AddComponent<TextMeshProUGUI>();
@@ -53,6 +60,7 @@ public class Level2DialogueUI : MonoBehaviour
         srt.pivot = new Vector2(0f, 1f);
         srt.anchoredPosition = new Vector2(42f, -15f);
         srt.sizeDelta = new Vector2(280f, 56f);
+
 
         GameObject bodyGo = Level2UI.Create("Body", _root.transform);
         _body = bodyGo.AddComponent<TextMeshProUGUI>();
@@ -70,6 +78,7 @@ public class Level2DialogueUI : MonoBehaviour
         brt.offsetMin = new Vector2(120f, 46f);
         brt.offsetMax = new Vector2(-120f, -76f);
 
+
         _arrow = Level2UI.MakeText(_root.transform, "Arrow", "▼", font, 24f,
                                   new Color32(118, 80, 42, 255), new Vector2(40f, 36f), Vector2.zero,
                                   TextAlignmentOptions.Center);
@@ -81,8 +90,10 @@ public class Level2DialogueUI : MonoBehaviour
         art.sizeDelta = new Vector2(40f, 36f);
         _arrow.raycastTarget = false;
 
+
         _root.SetActive(false);
     }
+
 
     public void Show(List<Level2Line> lines, Action onDone)
     {
@@ -97,6 +108,7 @@ public class Level2DialogueUI : MonoBehaviour
             return;
         }
 
+
         _lines = lines;
         _index = 0;
         _onDone = onDone;
@@ -107,6 +119,7 @@ public class Level2DialogueUI : MonoBehaviour
         _routine = StartCoroutine(PlayRoutine());
     }
 
+
     private IEnumerator PlayRoutine()
     {
         for (_index = 0; _index < _lines.Count; _index++)
@@ -114,18 +127,25 @@ public class Level2DialogueUI : MonoBehaviour
             Level2Line line = _lines[_index];
             if (line == null || string.IsNullOrEmpty(line.text)) continue;
 
+
             _speaker.text = line.speaker ?? "";
             _speaker.gameObject.SetActive(!string.IsNullOrEmpty(line.speaker));
             _speaker.color = SpeakerColor(line.speaker);
+
+            // ★ 新增：每行对话开始，按说话人播一次语音
+            PlaySpeakerVoice(line.speaker);
+
 
             _body.text = line.text;
             _body.maxVisibleCharacters = 0;
             _body.ForceMeshUpdate(true);
             int total = _body.textInfo.characterCount;
 
+
             _typing = true;
             _waiting = false;
             _arrow.gameObject.SetActive(false);
+
 
             float shown = 0f;
             const float charsPerSecond = 30f;
@@ -138,11 +158,13 @@ public class Level2DialogueUI : MonoBehaviour
             _typing = false;
             _body.maxVisibleCharacters = total;
 
+
             _waiting = true;
             while (_waiting) yield return null;
             _arrow.gameObject.SetActive(false);
             yield return null;
         }
+
 
         IsOpen = false;
         _routine = null;
@@ -152,9 +174,43 @@ public class Level2DialogueUI : MonoBehaviour
         if (!IsOpen) _root.SetActive(false);
     }
 
+
+    // ★ 新增：按说话人分派语音
+    private static void PlaySpeakerVoice(string speaker)
+{
+    string clip;
+
+    if (string.IsNullOrEmpty(speaker))
+    {
+        clip = Level2SFX.Narration;
+    }
+    else
+    {
+        string s = speaker.ToLowerInvariant();
+
+        if (s.Contains("园丁"))
+            clip = Level2SFX.GardenerTalk;
+        else if (s.Contains("阿婆") || s.Contains("奶奶"))
+            clip = Level2SFX.OldLadyTalk;
+        else if (s.Contains("老板") || s.Contains("早餐"))
+            clip = Level2SFX.BossTalk;
+        else if (s.Contains("裁缝"))
+            clip = Level2SFX.TailorTalk;
+        else if (s.Contains("工人"))
+            clip = Level2SFX.WorkerTalk;
+        else
+            clip = Level2SFX.PlayerTalk;
+    }
+
+    Level2SFX.Play(clip, 1f);   // ← 从 AudioManager.Instance.PlaySFXByName 改成这个
+}
+
+
+
     private void Update()
     {
         if (!IsOpen) return;
+
 
         if (_waiting)
         {
@@ -169,13 +225,16 @@ public class Level2DialogueUI : MonoBehaviour
             _arrow.gameObject.SetActive(false);
         }
 
+
         if (Time.unscaledTime < _ignoreInputUntil) return;
+
 
         bool advance = Input.GetKeyDown(KeyCode.Return)
                        || Input.GetKeyDown(KeyCode.KeypadEnter)
                        || Input.GetKeyDown(KeyCode.Space)
                        || Input.GetMouseButtonDown(0);
         if (!advance) return;
+
 
         if (_typing)
         {
@@ -187,6 +246,7 @@ public class Level2DialogueUI : MonoBehaviour
             _waiting = false;
         }
     }
+
 
     private static Color SpeakerColor(string speaker)
     {

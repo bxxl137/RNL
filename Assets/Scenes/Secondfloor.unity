@@ -373,6 +373,7 @@ GameObject:
   - component: {fileID: 287437125}
   - component: {fileID: 287437127}
   - component: {fileID: 287437126}
+  - component: {fileID: 287437128}
   m_Layer: 5
   m_Name: "\u72EC\u767D"
   m_TagString: Untagged
@@ -496,6 +497,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 287437124}
   m_CullTransparentMesh: 1
+--- !u!114 &287437128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 287437124}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2d50da4fcbab8bb4092c85fd0ce268b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  reason: 1
+  manualControl: 0
 --- !u!1 &386797117
 GameObject:
   m_ObjectHideFlags: 0
@@ -1001,7 +1017,7 @@ GameObject:
   - component: {fileID: 994100395}
   m_Layer: 0
   m_Name: humannpc
-  m_TagString: Untagged
+  m_TagString: waitforinteraction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1175,6 +1191,37 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 3
   m_TargetDisplay: 0
+--- !u!1 &1012600528
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1012600529}
+  m_Layer: 0
+  m_Name: cannotmovemanager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1012600529
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1012600528}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 10.862642, y: 11.502169, z: -10.18647}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1163130671
 GameObject:
   m_ObjectHideFlags: 0
@@ -1566,7 +1613,7 @@ GameObject:
   - component: {fileID: 1378181348}
   m_Layer: 0
   m_Name: tiggerplace5
-  m_TagString: Untagged
+  m_TagString: waitforinteraction
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2418,3 +2465,4 @@ SceneRoots:
   - {fileID: 1949724137}
   - {fileID: 1891634811}
   - {fileID: 1625343082}
+  - {fileID: 1012600529}

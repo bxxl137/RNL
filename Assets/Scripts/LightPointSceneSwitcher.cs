@@ -49,13 +49,26 @@ public class LightPointSceneSwitcher : MonoBehaviour
     }
 
     private void DoSwitch()
+{
+    if (string.IsNullOrEmpty(targetSceneName))
     {
-        if (string.IsNullOrEmpty(targetSceneName))
-        {
-            Debug.LogWarning("[光点切场景] targetSceneName 为空，无法切换");
-            return;
-        }
-
-        SceneManager.LoadScene(targetSceneName, LoadSceneMode.Single);
+        Debug.LogWarning("[光点切场景] targetSceneName 为空，无法切换");
+        return;
     }
+
+    var manager = LightNetworkManager.Instance;
+
+    // ★ 只有满足条件才清空
+    if (manager != null && manager.PointCount >= targetPointCount)
+    {
+        Debug.Log($"[光点切场景] 确认达到 {targetPointCount} 个，清空所有光点后切场景");
+        manager.ClearAllPoints();
+    }
+    Invoke(nameof(LoadScene), 3f); // 延迟一点点，确保光点清空后再切场景
+    
+}
+    private void LoadScene()
+    {SceneManager.LoadScene(targetSceneName, LoadSceneMode.Single);}
+        
+
 }

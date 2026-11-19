@@ -290,6 +290,10 @@ public class Level2Bootstrap : MonoBehaviour
         _camera.backgroundColor = new Color(0.05f, 0.07f, 0.10f, 1f);
         _camera.transform.position = new Vector3(0f, 0f, -10f);
         _camera.transform.rotation = Quaternion.identity;
+        if (_camera.GetComponent<Level2CameraFollow>() == null)
+        {
+            _camera.gameObject.AddComponent<Level2CameraFollow>();
+        }
     }
 
     private static void SetupEventSystem()
@@ -331,16 +335,21 @@ public class Level2Bootstrap : MonoBehaviour
         var bg = CreateArt("Background", backgrounds[i], zone.transform, Vector3.zero, 1.6f, -100);
 
         // —— 关键：保证背景宽度足以铺满相机视野 ——
-        if (backgrounds[i] != null)
-        {
-            float spriteWorldWidth = backgrounds[i].bounds.size.x * 1.6f;
-            float requiredWidth = (ZoneMaxX[i] - ZoneMinX[i]) + 6.7f * 2f; // 两侧各留视野半宽余量
-            if (spriteWorldWidth < requiredWidth)
-            {
-                float factor = requiredWidth / spriteWorldWidth;
-                bg.transform.localScale = new Vector3(1.6f * factor, bg.transform.localScale.y, 1f);
-            }
-        }
+        if (backgrounds[i] != null){
+    float spriteWorldWidth = backgrounds[i].bounds.size.x * 1.6f;
+
+    // 相机一屏的世界宽度
+    float viewWidth = _camera.orthographicSize * _camera.aspect * 2f;
+
+    // 区域宽度 + 一屏宽度 = 相机贴到任意一端也能盖满屏幕
+    float requiredWidth = (ZoneMaxX[i] - ZoneMinX[i]) + viewWidth;
+
+    if (spriteWorldWidth < requiredWidth)
+    {
+        float factor = requiredWidth / spriteWorldWidth;
+        bg.transform.localScale = new Vector3(1.6f * factor, bg.transform.localScale.y, 1f);
+    }}
+
     }
 
     BuildChessZone(_zones[0].transform);
@@ -585,39 +594,30 @@ public class Level2Bootstrap : MonoBehaviour
 /// 根据区块与当前屏幕宽高比，计算相机允许移动的 X 范围，
 /// 并把玩家设为跟随目标。区块比视野窄时直接锁死在中心，避免黑边。
 /// </summary>
+/// <summary>
+/// 根据区块与当前屏幕宽高比，计算相机允许移动的 X 范围，
+/// 并把玩家设为跟随目标。区块比视野窄时直接锁死在中心，避免黑边。
+/// </summary>
+          /// <summary>
+/// 根据区块与当前屏幕宽高比，计算相机允许移动的 X 范围，
+/// 并把玩家设为跟随目标。区块比视野窄时直接锁死在中心，避免黑边。
+/// </summary>
 private void ApplyCameraBounds(int zone)
 {
-    if (_camera == null) return;
+    var cam = _camera != null ? _camera.GetComponent<Level2CameraFollow>() : null;
+    if (cam == null) return;
 
-    var follow = _camera.GetComponent<camerafollow>();
-    if (follow == null) follow = _camera.gameObject.AddComponent<camerafollow>();
+    // 把玩家设为跟随目标
+    if (_playerGo != null)
+        cam.SetTarget(_playerGo.transform);
 
-    // 玩家始终作为跟随目标
-    if (_playerGo != null) follow.SetTarget(_playerGo.transform);
+    // 区域的世界坐标左右边缘
+    float left  = ZoneMinX[zone] + ZoneOffsets[zone];
+    float right = ZoneMaxX[zone] + ZoneOffsets[zone];
 
-    // 相机水平可视半宽 = orthographicSize × 宽高比
-    float camHalfView = _camera.orthographicSize * ((float)Screen.width / Mathf.Max(1, Screen.height));
-
-    float centerX = ZoneOffsets[zone];
-    // 背景世界坐标下的左右边缘（以区块中心为基准）
-    float bgLeft  = centerX + ZoneMinX[zone];
-    float bgRight = centerX + ZoneMaxX[zone];
-
-    // 相机中心允许范围：镜头边缘不能超出背景边缘
-    float limitMin = bgLeft  + camHalfView;
-    float limitMax = bgRight - camHalfView;
-
-    if (limitMin >= limitMax)
-    {
-        // 区块比视野还窄：锁死在背景中心
-        float mid = (bgLeft + bgRight) * 0.5f;
-        follow.SetBounds(mid, mid);
-    }
-    else
-    {
-        follow.SetBounds(limitMin, limitMax);
-    }
+    cam.SetZone(left, right);
 }
+
 
 
     private void CheckZoneTransition()
@@ -1213,10 +1213,16 @@ private void ApplyCameraBounds(int zone)
     // =====================================================================
 
     private void AddFragments(int delta)
-    {
-        _fragments = Mathf.Max(0, _fragments + delta);
-        _hud.SetFragments(_fragments);
-    }
+{
+    int before = _fragments;                       // ★ 记录改前值
+    _fragments = Mathf.Max(0, _fragments + delta);
+    _hud.SetFragments(_fragments);
+
+    // ★ 新增：只有真的增加了才响（delta > 0 且数量确实变了）
+    if (delta > 0 && _fragments > before)
+        Level2SFX.Play(Level2SFX.ShardPickup, 1f);
+}
+
 
     private void Talk(Action onDone, params Level2Line[] lines)
     {

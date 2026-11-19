@@ -4,7 +4,7 @@ using UnityEngine;
 /// 挂在 tiggerplace5 上（Collider2D 需勾 Is Trigger）。
 /// 玩家在触发区域内按 Return：noon 失活，day 激活。
 /// </summary>
-public class 迎接美好的明天 : MonoBehaviour
+public class totomorrow : MonoBehaviour
 {
     [Header("切换目标")]
     [SerializeField] private GameObject noonObject;   // 拖 secondfloor/noon

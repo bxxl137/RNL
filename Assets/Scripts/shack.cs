@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class 闪瞎你的钛合金dogeyes : MonoBehaviour
+public class shack : MonoBehaviour
 {
     [Tooltip("两个灯交替的时间间隔（秒）")]
     public float interval = 1f;

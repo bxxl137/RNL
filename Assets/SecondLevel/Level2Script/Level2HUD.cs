@@ -219,23 +219,29 @@ public class Level2HUD : MonoBehaviour
     }
 
     public void SetNode(int index, bool lit)
+{
+    if (index < 0 || index >= 4) return;
+
+    bool wasLit = _nodeLit[index];      // ★ 记录旧状态
+    _nodeLit[index] = lit;
+    _nodeDots[index].color = lit ? Level2UI.Warm : Level2UI.Dim;
+    _nodeGlows[index].color = new Color(1f, 0.82f, 0.52f, lit ? 0.5f : 0.08f);
+
+    int count = 0;
+    for (int i = 0; i < 4; i++) if (_nodeLit[i]) count++;
+    if (_nodeTitle != null) _nodeTitle.text = "微光节点  " + count + " / 4";
+
+    for (int i = 0; i < 3; i++)
     {
-        if (index < 0 || index >= 4) return;
-        _nodeLit[index] = lit;
-        _nodeDots[index].color = lit ? Level2UI.Warm : Level2UI.Dim;
-        _nodeGlows[index].color = new Color(1f, 0.82f, 0.52f, lit ? 0.5f : 0.08f);
-
-        int count = 0;
-        for (int i = 0; i < 4; i++) if (_nodeLit[i]) count++;
-        if (_nodeTitle != null) _nodeTitle.text = "微光节点  " + count + " / 4";
-
-        for (int i = 0; i < 3; i++)
-        {
-            bool on = _nodeLit[i] && _nodeLit[i + 1];
-            _segments[i].color = on ? new Color(1f, 0.78f, 0.42f, 0.9f)
-                                    : new Color(0.55f, 0.58f, 0.66f, 0.35f);
-        }
+        bool on = _nodeLit[i] && _nodeLit[i + 1];
+        _segments[i].color = on ? new Color(1f, 0.78f, 0.42f, 0.9f)
+                                : new Color(0.55f, 0.58f, 0.66f, 0.35f);
     }
+
+    // ★ 新增：只有"从灭到亮"才播，防止重复调用/初始化刷新时误响
+    if (!wasLit && lit)
+        Level2SFX.Play(Level2SFX.NodeLightUp, 0.9f);
+}
 
     public void ShowToast(string message)
     {

@@ -9,7 +9,7 @@ using UnityEngine;
 /// 2. humannpc 已激活 + 背包有"微光碎片3" ×1 的前提下，玩家在区域内按 Return：
 ///    扣除 1 个微光碎片3，并播放 Canvas/Panel/独白 的台词序列
 /// </summary>
-public class WorkerDayDialogue : MonoBehaviour
+public class lightrepair : MonoBehaviour
 {
     [System.Serializable]
     public class LineConfig
