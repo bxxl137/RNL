@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 /// 挂在 tiggerplace7 上（Collider2D 需勾 Is Trigger）。
 /// 玩家在触发区域内按 Return：检查是否有微光碎片4，满足才切换场景。
 /// </summary>
-public class 故地重游 : MonoBehaviour
+public class Tofirst : MonoBehaviour
 {
     public AudioClip clip;
     [Header("目标场景")]

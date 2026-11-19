@@ -154,6 +154,8 @@ public class AudioManager : MonoBehaviour
         fadeRoutine = null;
     }
 
+    
+    
     // ================= SFX（不变） =================
     public void PlaySFX(AudioClip clip, float volumeScale = 1f)
     {
@@ -164,6 +166,37 @@ public class AudioManager : MonoBehaviour
         src.panStereo = 0f;
         src.PlayOneShot(clip, volumeScale);
     }
+    // ================= 按名字播放（Resources/Audio/<name>）=================
+private readonly System.Collections.Generic.Dictionary<string, AudioClip> _clipCache
+    = new System.Collections.Generic.Dictionary<string, AudioClip>();
+
+/// <summary>
+/// 按文件名播放音效。文件需放在 Resources/Audio/ 下，文件名即 clipName（不含扩展名）。
+/// 找不到时打警告并静默返回，不会抛异常。
+/// </summary>
+public void PlaySFXByName(string clipName, float volumeScale = 1f)
+{
+    var clip = LoadClipCached(clipName);
+    if (clip == null) return;
+    PlaySFX(clip, volumeScale);
+}
+
+private AudioClip LoadClipCached(string clipName)
+{
+    if (string.IsNullOrEmpty(clipName)) return null;
+    if (_clipCache.TryGetValue(clipName, out var cached) && cached != null)
+        return cached;
+
+    var clip = Resources.Load<AudioClip>("Audio/" + clipName);
+    if (clip == null)
+    {
+        Debug.LogWarning($"[AudioManager] 找不到音效：Resources/Audio/{clipName}");
+        return null;
+    }
+    _clipCache[clipName] = clip;
+    return clip;
+}
+
 
     public void PlaySFXAt(AudioClip clip, Vector3 worldPos, float volumeScale = 1f)
     {

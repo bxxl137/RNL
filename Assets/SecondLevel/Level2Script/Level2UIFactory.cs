@@ -76,37 +76,41 @@ public static class Level2UI
     }
 
     public static Button MakeButton(Transform parent, string name, string label, TMP_FontAsset font, float fontSize,
-                                    Vector2 size, Vector2 pos, Action onClick, Sprite sprite = null,
-                                    Color? backgroundColor = null, Color? textColor = null)
+                                Vector2 size, Vector2 pos, Action onClick, Sprite sprite = null,
+                                Color? backgroundColor = null, Color? textColor = null)
+{
+    GameObject go = Create(name, parent);
+    Image img = go.AddComponent<Image>();
+    img.sprite = sprite;
+    img.preserveAspect = false;
+    img.raycastTarget = true;
+    img.color = backgroundColor ?? Color.white;
+    Anchor(go.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), pos, size);
+
+    Button btn = go.AddComponent<Button>();
+    btn.targetGraphic = img;
+    btn.navigation = new Navigation { mode = Navigation.Mode.None };
+    ColorBlock colors = btn.colors;
+    colors.normalColor = Color.white;
+    colors.highlightedColor = new Color(1.08f, 1.08f, 1.08f, 1f);
+    colors.pressedColor = new Color(0.85f, 0.85f, 0.85f, 1f);
+    colors.selectedColor = Color.white;
+    colors.disabledColor = new Color(1f, 1f, 1f, 0.5f);
+    btn.colors = colors;
+
+    // ★ 新增：点击音效（先播，再执行 onClick，保证按钮隐藏了也能响）
+    btn.onClick.AddListener(() => Level2SFX.Play(Level2SFX.SelectClick, 1f));
+
+    if (onClick != null) btn.onClick.AddListener(() => onClick());
+
+    if (!string.IsNullOrEmpty(label))
     {
-        GameObject go = Create(name, parent);
-        Image img = go.AddComponent<Image>();
-        img.sprite = sprite;
-        img.preserveAspect = false;
-        img.raycastTarget = true;
-        img.color = backgroundColor ?? Color.white;
-        Anchor(go.GetComponent<RectTransform>(), new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f), pos, size);
-
-        Button btn = go.AddComponent<Button>();
-        btn.targetGraphic = img;
-        btn.navigation = new Navigation { mode = Navigation.Mode.None };
-        ColorBlock colors = btn.colors;
-        colors.normalColor = Color.white;
-        colors.highlightedColor = new Color(1.08f, 1.08f, 1.08f, 1f);
-        colors.pressedColor = new Color(0.85f, 0.85f, 0.85f, 1f);
-        colors.selectedColor = Color.white;
-        colors.disabledColor = new Color(1f, 1f, 1f, 0.5f);
-        btn.colors = colors;
-        if (onClick != null) btn.onClick.AddListener(() => onClick());
-
-        if (!string.IsNullOrEmpty(label))
-        {
-            TextMeshProUGUI text = MakeText(go.transform, "Label", label, font, fontSize,
-                                            textColor ?? BodyBrown, size, Vector2.zero, TextAlignmentOptions.Center);
-            text.raycastTarget = false;
-        }
-        return btn;
+        TextMeshProUGUI text = MakeText(go.transform, "Label", label, font, fontSize,
+                                        textColor ?? BodyBrown, size, Vector2.zero, TextAlignmentOptions.Center);
+        text.raycastTarget = false;
     }
+    return btn;
+}
 
     public static T AddIfMissing<T>(GameObject go) where T : Component
     {

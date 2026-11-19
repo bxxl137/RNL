@@ -7,7 +7,7 @@ using UnityEngine;
 /// 第一次进入：播放台词。
 /// 再次进入且 day 已激活：把"微光碎片"加入背包。
 /// </summary>
-public class 老比灯 : MonoBehaviour
+public class secondlight : MonoBehaviour
 {
     [Header("文字组件")]
     [SerializeField] private TMP_Text targetText;

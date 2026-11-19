@@ -8,7 +8,7 @@ using UnityEngine;
 /// 玩家进入区域时：激活遮罩，按顺序逐句播放台词。
 /// 每句可单独设置颜色、逐字速度与播放后间隔。
 /// </summary>
-public class 喜欢一个人心里话是藏不住的 : MonoBehaviour
+public class heartsaying : MonoBehaviour
 {
     [System.Serializable]
     public class LineConfig
