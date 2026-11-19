@@ -51,6 +51,9 @@ public class 喜欢一个人心里话是藏不住的 : MonoBehaviour
     [Header("触发限制")]
     [SerializeField] private bool onlyOnce = true;
 
+    public AudioClip clip1;
+    public AudioClip clip2;
+
     private Coroutine _routine;
     private bool _played;
 
@@ -78,6 +81,7 @@ public class 喜欢一个人心里话是藏不住的 : MonoBehaviour
 
         _played = true;
         if (_routine != null) StopCoroutine(_routine);
+        AudioManager.Instance.PlayBGM(clip1, fadeTime: 1.5f);
         _routine = StartCoroutine(PlayRoutine());
     }
 
@@ -145,6 +149,7 @@ public class 喜欢一个人心里话是藏不住的 : MonoBehaviour
         // 全部说完，淡出收尾
         if (targetText != null)
         {
+            AudioManager.Instance.PlayBGM(clip2, fadeTime: 1.5f);
             float t = 0f, dur = 0.6f;
             while (t < dur)
             {

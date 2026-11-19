@@ -212,6 +212,7 @@ GameObject:
   - component: {fileID: 186501704}
   - component: {fileID: 186501703}
   - component: {fileID: 186501708}
+  - component: {fileID: 186501709}
   m_Layer: 5
   m_Name: exit
   m_TagString: Untagged
@@ -382,6 +383,27 @@ MonoBehaviour:
   settingsSceneName: SettingScene
   clickedSprite: {fileID: 0}
   backDelay: 0.5
+--- !u!114 &186501709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 186501701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f088040e361587a4288f53dbbfe3e023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightClip: {fileID: 8300000, guid: f745c9327480b414784bfce7fe50380e, type: 3}
+  highlightVolume: 0.5
+  pressedClip: {fileID: 8300000, guid: 07717348089168a4c8e5b7ddb1d2cb1d, type: 3}
+  pressedVolume: 1
+  pressedBGM: {fileID: 8300000, guid: a33d52d10d5d4e045a107405f8cae11f, type: 3}
+  bgmFadeTime: 0.8
+  namesThatPlayBGM:
+  - start
+  - continue
 --- !u!1 &298105429
 GameObject:
   m_ObjectHideFlags: 0
@@ -569,6 +591,7 @@ GameObject:
   - component: {fileID: 793758909}
   - component: {fileID: 793758908}
   - component: {fileID: 793758907}
+  - component: {fileID: 793758912}
   m_Layer: 5
   m_Name: no
   m_TagString: Untagged
@@ -715,6 +738,27 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 793758905}
   m_CullTransparentMesh: 1
+--- !u!114 &793758912
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793758905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f088040e361587a4288f53dbbfe3e023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightClip: {fileID: 8300000, guid: f745c9327480b414784bfce7fe50380e, type: 3}
+  highlightVolume: 0.5
+  pressedClip: {fileID: 8300000, guid: 07717348089168a4c8e5b7ddb1d2cb1d, type: 3}
+  pressedVolume: 1
+  pressedBGM: {fileID: 8300000, guid: a33d52d10d5d4e045a107405f8cae11f, type: 3}
+  bgmFadeTime: 0.8
+  namesThatPlayBGM:
+  - start
+  - continue
 --- !u!1 &976825272
 GameObject:
   m_ObjectHideFlags: 0
@@ -903,7 +947,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1143101542}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
   m_Name: 

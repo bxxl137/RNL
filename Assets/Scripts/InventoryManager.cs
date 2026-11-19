@@ -9,6 +9,7 @@ using System;
 
 public class InventoryManager : MonoBehaviour
 {
+    public AudioClip clip;
     public static InventoryManager Instance;
     public static event Action<string> OnItemAdded;
     public static event Action<string, int> OnItemRemoved;   // 【新增】物品id, 消耗数量
@@ -89,6 +90,7 @@ public class InventoryManager : MonoBehaviour
             scrollRect.verticalNormalizedPosition = 0f;
         }
         OnItemAdded?.Invoke($"获得 {itemName} x{amount}");
+        AudioManager.Instance.PlaySFX(clip);
         return true;
     }
 

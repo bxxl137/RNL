@@ -419,7 +419,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u6628\u5929\u6709\u4EBA\u6253\u7535\u8BDD\u62A5\u4FEE\u8FD9\u91CC\u548C\u697C\u4E0B\u7684\u706F\n\u6211\u4EEC\u68C0\u67E5\u540E\u53D1\u73B0\u662F\u7535\u8DEF\u8001\u5316\u7684\u95EE\u9898\uFF0C\u800C\u4E14\u5DF2\u7ECF\u5F88\u4E45\u4E86\u554A\n\u73B0\u5728\u5DF2\u7ECF\u4FEE\u597D\u4E86\u3002\u4E0B\u6B21\u53D1\u73B0\u8BBE\u5907\u6545\u969C\u7684\u8BDD\u4E00\u5B9A\u8981\u53CA\u65F6\u53CD\u9988\n\u4E0D\u7136\u6307\u4E0D\u5B9A\u4F1A\u51FA\u4EC0\u4E48\u610F\u5916\u5462"
+  m_text: "\u6628\u5929\u6709\u4EBA\u6253\u7535\u8BDD\u62A5\u4FEE\u8FD9\u91CC\u548C\u697C\u4E0B\u7684\u706F\n\u6211\u4EEC\u68C0\u67E5\u540E\u53D1\u73B0\u662F\u7535\u8DEF\u8001\u5316\u7684\u95EE\u9898\uFF0C\u800C\u4E14\u5DF2\u7ECF\u5F88\u4E45\u4E86\u554A\n\u73B0\u5728\u5DF2\u7ECF\u4FEE\u597D\u4E86\u3002\u4E0B\u6B21\u53D1\u73B0\u8BBE\u5907\u6545\u969C\u7684\u8BDD\u4E00\u5B9A\u8981\u53CA\u65F6\u53CD\u6620\n\u4E0D\u7136\u6307\u4E0D\u5B9A\u4F1A\u51FA\u4EC0\u4E48\u610F\u5916\u5462"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3dd929d2cc0e83245a66398b8741ad28, type: 2}
   m_sharedMaterial: {fileID: -2626663008814293662, guid: 3dd929d2cc0e83245a66398b8741ad28, type: 2}
@@ -1349,6 +1349,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2db07b808eb5f74d91caed0cac26f52, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clip: {fileID: 8300000, guid: 1568b22858eaf3d468319c6ed3e255d1, type: 3}
   targetSceneName: NeibourScene-firstfloor
   requiredItemId: item_04
   requiredItemName: "\u5FAE\u5149\u788E\u72474"
@@ -1391,8 +1392,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 9.500122, y: 0.5}
-  m_SizeDelta: {x: 19, y: 1}
+  m_AnchoredPosition: {x: 0.5516968, y: 5.8688965}
+  m_SizeDelta: {x: 79.8489, y: 69.0078}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1288369530
 MonoBehaviour:
@@ -1407,7 +1408,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.392}
+  m_Color: {r: 0.25157225, g: 0.25157225, b: 0.25157225, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1702,15 +1703,17 @@ MonoBehaviour:
     color: {r: 0.8627451, g: 0.8616352, b: 0.17612034, a: 0}
     gapAfter: 3
     typewriter: 1
-    charsPerSecond: 20
+    charsPerSecond: 5
   - text: "\uFF08\u4E0D\u77E5\u4F55\u65F6\u5F00\u59CB\uFF0C\u8FD9\u4E2A\u5C0F\u533A\u4F3C\u4E4E\u5931\u53BB\u4E86\u5F80\u65E5\u7684\u9C9C\u6D3B\u4E0E\u751F\u6C14\uFF09\n\uFF08\u5927\u5BB6\u5FD9\u4E8E\u81EA\u5DF1\u7684\u751F\u6D3B\uFF0C\u5374\u6E10\u6E10\u5FFD\u7565\u4E86\u8EAB\u8FB9\u7684\u4EBA\u4E0E\u4E8B\uFF09\n\uFF08\u65E0\u4EBA\u6253\u7406\u7684\u6742\u7269\u5806\uFF0C\u65E0\u4EBA\u7406\u4F1A\u7684\u574F\u6389\u7684\u706F\u6CE1\uFF09\n\uFF08\u6211\u4E5F\u53EA\u662F\u5728\u521A\u521A\u5FFD\u7136\u5BDF\u89C9\uFF0C\u4F3C\u4E4E\u81EA\u5DF1\u4E5F\u65E9\u5DF2\u9677\u5165\u5176\u4E2D\u4E86\uFF09\n\uFF08\u8FD8\u597D\u73B0\u5728\u53D1\u73B0\u4E5F\u4E0D\u7B97\u592A\u665A\uFF09\n\uFF08\u53BB\u6253\u7535\u8BDD\u7ED9\u697C\u9053\u706F\u548C\u8DEF\u706F\u62A5\u4FEE\uFF0C\u7136\u540E\u5C31\u7761\u89C9\u5427\uFF09\n\uFF08\u660E\u5929\u53C8\u662F\u5168\u65B0\u7684\u4E00\u5929\uFF09\ntip:\u6309\u56DE\u8F66\u7761\u89C9\n\n"
-    color: {r: 0.23529413, g: 0.23529413, b: 0.23529413, a: 1}
+    color: {r: 1, g: 0.7178234, b: 0, a: 1}
     gapAfter: 3
     typewriter: 1
-    charsPerSecond: 20
-  defaultCharsPerSecond: 22
+    charsPerSecond: 5
+  defaultCharsPerSecond: 10
   holdTime: 1.5
   onlyOnce: 1
+  clip1: {fileID: 8300000, guid: 8cb9a70100bd086489b00b3c9b8112fb, type: 3}
+  clip2: {fileID: 8300000, guid: 90b5f60271601fb4494f2f58900c6c54, type: 3}
 --- !u!114 &1378181348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2095,7 +2098,7 @@ MonoBehaviour:
   hideMaskOnExit: 1
   targetText: {fileID: 287437126}
   lines:
-  - text: "\u6628\u5929\u6709\u4EBA\u6253\u7535\u8BDD\u62A5\u4FEE\u8FD9\u91CC\u548C\u697C\u4E0B\u7684\u706F\n\u6211\u4EEC\u68C0\u67E5\u540E\u53D1\u73B0\u662F\u7535\u8DEF\u8001\u5316\u7684\u95EE\u9898\uFF0C\u800C\u4E14\u5DF2\u7ECF\u5F88\u4E45\u4E86\u554A\n\u73B0\u5728\u5DF2\u7ECF\u4FEE\u597D\u4E86\u3002\u4E0B\u6B21\u53D1\u73B0\u8BBE\u5907\u6545\u969C\u7684\u8BDD\u4E00\u5B9A\u8981\u53CA\u65F6\u53CD\u9988\n\u4E0D\u7136\u6307\u4E0D\u5B9A\u4F1A\u51FA\u4EC0\u4E48\u610F\u5916\u5462"
+  - text: "\u6628\u5929\u6709\u4EBA\u6253\u7535\u8BDD\u62A5\u4FEE\u8FD9\u91CC\u548C\u697C\u4E0B\u7684\u706F\n\u6211\u4EEC\u68C0\u67E5\u540E\u53D1\u73B0\u662F\u7535\u8DEF\u8001\u5316\u7684\u95EE\u9898\uFF0C\u800C\u4E14\u5DF2\u7ECF\u5F88\u4E45\u4E86\u554A\n\u73B0\u5728\u5DF2\u7ECF\u4FEE\u597D\u4E86\u3002\u4E0B\u6B21\u53D1\u73B0\u8BBE\u5907\u6545\u969C\u7684\u8BDD\u4E00\u5B9A\u8981\u53CA\u65F6\u53CD\u6620\n\u4E0D\u7136\u6307\u4E0D\u5B9A\u4F1A\u51FA\u4EC0\u4E48\u610F\u5916\u5462"
     color: {r: 0.9308176, g: 0.7522778, b: 0.09073993, a: 0}
     gapAfter: 0
     typewriter: 1

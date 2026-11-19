@@ -169,7 +169,7 @@ public class PlayerManager : MonoBehaviour
     {
         if (!enableSceneBoundary || sceneBoundaries == null) return;
 
-        string current = UnityEditor.EditorApplication.isPlaying
+        string current = Application.isPlaying
             ? SceneManager.GetActiveScene().name
             : gameObject.scene.name;
 

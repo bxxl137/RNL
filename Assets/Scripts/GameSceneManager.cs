@@ -13,9 +13,7 @@ public class GameSceneManager : MonoBehaviour
 {
     public static GameSceneManager Instance;
 
-    // ★ 影子标志：场景重新加载产生的新实例会被标记为影子
     private bool isShadow = false;
-
     private Stack<string> overlayStack = new Stack<string>();
 
     [Header("基础配置")]
@@ -33,11 +31,28 @@ public class GameSceneManager : MonoBehaviour
     [Header("转场冷却")]
     public float transitionCooldown = 0.3f;
 
+    // ★ 新增：场景 BGM 配置
+    [System.Serializable]
+    public class SceneBGMEntry
+    {
+        [Tooltip("场景名，要和 Build Settings 里的场景名完全一致")]
+        public string sceneName;
+        public AudioClip bgm;
+        [Tooltip("淡变时长，0 = 硬切")]
+        public float fadeTime = 0.8f;
+    }
+
+    [Header("场景 BGM 配置")]
+    [Tooltip("进入某个场景时自动播放对应 BGM（只对 LoadSceneMode.Single 生效）")]
+    public SceneBGMEntry[] sceneBGMs;
+
+    [Tooltip("场景没在列表里时，用这首 BGM；留空 = 不切 BGM")]
+    public AudioClip defaultBGM;
+
     private string currentBaseScene;
     private float lastTransitionTime = -999f;
 
     // ===== 对外查询接口 =====
-    // 影子也转发到真正实例，保证 InventoryUI 等外部调用拿到正确状态
     public bool IsInMainMenu => isShadow ? Instance.IsInMainMenu
                                          : (currentBaseScene == mainMenuSceneName);
 
@@ -61,17 +76,20 @@ public class GameSceneManager : MonoBehaviour
         }
         else if (Instance != this)
         {
-            // ★ 场景重新加载时产生的新实例：不销毁自己，退化为"影子"
-            //   - Inspector 拖拽的按钮引用会指向这个影子，点击时转发给 Instance
-            //   - 影子不 DontDestroyOnLoad，会随 StartScene 一起正常卸载
             isShadow = true;
-            // 注意：这里不要 Destroy(gameObject)，也不要 DontDestroyOnLoad
         }
+    }
+
+    // ★ 新增：初始场景不会触发 sceneLoaded 事件，手动补一次
+    private void Start()
+    {
+        if (isShadow) return;
+        PlayBGMForScene(currentBaseScene);
     }
 
     private void OnEnable()
     {
-        if (isShadow) return;   // 影子不订阅场景事件
+        if (isShadow) return;
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
@@ -89,17 +107,46 @@ public class GameSceneManager : MonoBehaviour
             currentBaseScene = scene.name;
             overlayStack.Clear();
             if (freezeTimeOnPause) Time.timeScale = 1f;
+            PlayBGMForScene(scene.name);   // ★ 新增
         }
+        // Additive（PauseScene 等）不切 BGM，原 BGM 继续
+    }
+
+    // ★ 新增：根据场景名切 BGM
+    private void PlayBGMForScene(string sceneName)
+    {
+        if (AudioManager.Instance == null) return;
+
+        AudioClip clip = null;
+        float fade = 0.8f;
+
+        if (sceneBGMs != null)
+        {
+            foreach (var entry in sceneBGMs)
+            {
+                if (entry != null && entry.sceneName == sceneName)
+                {
+                    clip = entry.bgm;
+                    fade = entry.fadeTime;
+                    break;
+                }
+            }
+        }
+
+        if (clip == null) clip = defaultBGM;
+        if (clip == null) return;   // 没配就保持当前 BGM 不变
+
+        AudioManager.Instance.PlayBGM(clip, fadeTime: fade);
     }
 
     private void Update()
     {
-        if (isShadow) return;   // 影子不处理 ESC，避免重复
+        if (isShadow) return;
         if (enableEscForPause && Input.GetKeyDown(KeyCode.Escape))
             HandleEscape();
     }
 
-    // ===================== ESC 统一入口 =====================
+    // ===================== ESC =====================
     private void HandleEscape()
     {
         if (InventoryUI.Instance != null && InventoryUI.Instance.IsOpen)
@@ -124,7 +171,7 @@ public class GameSceneManager : MonoBehaviour
         OpenPause();
     }
 
-    // ===================== 打开 / 关闭 PauseScene =====================
+    // ===================== Pause =====================
     public void OpenPause()
     {
         if (isShadow) { Instance.OpenPause(); return; }

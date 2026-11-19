@@ -2,15 +2,21 @@ using UnityEngine;
 
 public class TestInventory : MonoBehaviour
 {
+    void Start()
+    {
+        PlayerPrefs.DeleteAll();
+        string path = System.IO.Path.Combine(Application.persistentDataPath, "inventory.json");
+        if (System.IO.File.Exists(path)) System.IO.File.Delete(path);
+        Debug.LogWarning("存档已删除，请重新运行游戏。");
+    }
+
     void Update()
     {
-        // 按下数字键 1，添加红药水
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             InventoryManager.Instance.AddItem("item_01", "微光碎片1", "Glow_Shard",  1);
         }
 
-        // 按下数字键 2，添加木剑
         if (Input.GetKeyDown(KeyCode.Alpha2))
         {
             InventoryManager.Instance.AddItem("item_02", "微光碎片2", "Glow_Shard", 1);
@@ -45,17 +51,6 @@ public class TestInventory : MonoBehaviour
         {
             InventoryManager.Instance.AddItem("item_08", "微光碎片8", "Glow_Shard", 1);
         }
-
-        if (Input.GetKeyDown(KeyCode.Alpha9))
-        {
-            InventoryManager.Instance.AddItem("item_09", "微光碎片9", "Glow_Shard", 1);
-        }
-
-        if (Input.GetKeyDown(KeyCode.Alpha0))
-        {
-            InventoryManager.Instance.AddItem("item_10", "微光碎片10", "Glow_Shard", 1);
-        }
-        // 按下数字键 3，清空存档（用于重置测试）
         if (Input.GetKeyDown(KeyCode.Space))
         {
             PlayerPrefs.DeleteAll();

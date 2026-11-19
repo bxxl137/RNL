@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class 故地重游 : MonoBehaviour
 {
+    public AudioClip clip;
     [Header("目标场景")]
     [Tooltip("场景名，必须与 Build Settings 里完全一致（大小写敏感）")]
     [SerializeField] private string targetSceneName = "NeibourScene-firstfloor";
@@ -81,6 +82,7 @@ public class 故地重游 : MonoBehaviour
         Debug.Log($"[ReturnToScene] 已确认拥有 {requiredItemName}，正在切换到场景：{targetSceneName}");
 
         // 用名字加载，比 buildIndex 更稳（buildIndex 会随 Build Settings 顺序变）
+        AudioManager.Instance.PlaySFX(clip);
         SceneManager.LoadScene(targetSceneName, LoadSceneMode.Single);
     }
 }

@@ -11,6 +11,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class UpFloorInteractor : MonoBehaviour
 {
+    public AudioClip clip;
     [Header("引用")]
     [SerializeField] private LetterboxLock letterboxLock;  // letterbox/tiggerplace2
     [SerializeField] private BagInputTip toastUI;              // 玩家头顶的飘字脚本
@@ -114,6 +115,7 @@ public class UpFloorInteractor : MonoBehaviour
     private void EnterNextScene()
     {
         _switching = true;
+        AudioManager.Instance.PlaySFX(clip);
         SceneManager.LoadScene(nextSceneName);
     }
 }

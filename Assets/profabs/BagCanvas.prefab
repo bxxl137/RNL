@@ -596,6 +596,16 @@ MonoBehaviour:
     descriptionText: "\u900F\u8FC7\u788E\u7247\uFF0C\u4F60\u4F3C\u4E4E\u770B\u5230\u4E86\u90A3\u4E2A\u82B1\u575B\u7684\u4E3B\u4EBA\uFF0C\u4ED6\u60CA\u559C\u4E07\u5206\u5730\u770B\u7740\u575B\u5B50\u91CC\u957F\u51FA\u7684\u7F8E\u4E3D\u82B1\u6735"
   - itemId: item_08
     descriptionText: "\u900F\u8FC7\u788E\u7247\uFF0C\u4F60\u4F3C\u4E4E\u770B\u5230\u4E00\u4E2A\u5750\u5728\u7F1D\u7EAB\u673A\u524D\u7684\u4EBA\uFF0C\u5979\u6EE1\u8DB3\u7684\u4EAB\u7528\u7740\u8FD9\u4E9B\u7F8E\u98DF"
+  - itemId: item_09
+    descriptionText: "\u4E24\u4E2A\u76AE\u5305\u9985\u5927\u7684\u70ED\u4E4E\u5305\u5B50\uFF0C\u4E00\u6839\u6CB9\u6761\uFF0C\u4E00\u676F\u6E29\u800C\u4E0D\u70EB\u7684\u8C46\u6D46\u3002\u6CA1\u4EC0\u4E48\u6BD4\u8FD9\u66F4\u597D\u7684\u4E86"
+  - itemId: item_10
+    descriptionText: "\u5B83\u4E0A\u9762\u843D\u6EE1\u4E86\u5C18\u57C3\u3002\u4F60\u5C06\u7070\u5C18\u64E6\u62ED\u6389\uFF0C\u5B83\u53C8\u53D8\u56DE\u4E86\u90A3\u4E2A\u5D2D\u65B0\u7684\u8F66"
+  - itemId: item_11
+    descriptionText: "\u5373\u4F7F\u662F\u5C0F\u5352\uFF0C\u6709\u65F6\u4E5F\u6709\u7740\u51B3\u5B9A\u6218\u5C40\u7684\u529B\u91CF\u554A"
+  - itemId: item_12
+    descriptionText: "\u6563\u64AD\u5584\u610F\u7684\u79CD\u5B50\uFF0C\u5C06\u5B83\u79CD\u6EE1\u4E16\u754C\u5427"
+  - itemId: item_13
+    descriptionText: "\u4E0D\u77E5\u9053\u662F\u8C01\u843D\u5728\u81EA\u884C\u8F66\u4E0A\u7684\uFF0C\u7136\u540E\uFF0C\u4E0D\u53EF\u4EE5\u4E71\u7FFB\u522B\u4EBA\u7684\u5305"
 --- !u!1 &4989730830908032998
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,6 +789,7 @@ GameObject:
   - component: {fileID: 7591209579150379283}
   - component: {fileID: 6706308085110387701}
   - component: {fileID: 6740084065913309580}
+  - component: {fileID: 374742964627947715}
   m_Layer: 5
   m_Name: check
   m_TagString: Untagged
@@ -909,6 +920,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &374742964627947715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5515929834455597707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f088040e361587a4288f53dbbfe3e023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightClip: {fileID: 8300000, guid: f745c9327480b414784bfce7fe50380e, type: 3}
+  highlightVolume: 0.5
+  pressedClip: {fileID: 8300000, guid: 07717348089168a4c8e5b7ddb1d2cb1d, type: 3}
+  pressedVolume: 1
+  pressedBGM: {fileID: 8300000, guid: a33d52d10d5d4e045a107405f8cae11f, type: 3}
+  bgmFadeTime: 0.8
+  namesThatPlayBGM:
+  - start
+  - continue
 --- !u!1 &5693395090940672807
 GameObject:
   m_ObjectHideFlags: 0
@@ -922,6 +954,7 @@ GameObject:
   - component: {fileID: 5339922368763116340}
   - component: {fileID: 1677258038205301098}
   - component: {fileID: 636440122713611486}
+  - component: {fileID: 4018747533668155243}
   m_Layer: 5
   m_Name: cancel
   m_TagString: Untagged
@@ -1052,6 +1085,27 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &4018747533668155243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5693395090940672807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f088040e361587a4288f53dbbfe3e023, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  highlightClip: {fileID: 8300000, guid: f745c9327480b414784bfce7fe50380e, type: 3}
+  highlightVolume: 0.5
+  pressedClip: {fileID: 8300000, guid: 07717348089168a4c8e5b7ddb1d2cb1d, type: 3}
+  pressedVolume: 1
+  pressedBGM: {fileID: 8300000, guid: a33d52d10d5d4e045a107405f8cae11f, type: 3}
+  bgmFadeTime: 0.8
+  namesThatPlayBGM:
+  - start
+  - continue
 --- !u!1 &5929765336096109038
 GameObject:
   m_ObjectHideFlags: 0
@@ -1144,6 +1198,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb1f135fb0f17174b99abd7b2af6fffd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clip: {fileID: 8300000, guid: 7f745766f5e03e141a1cb97dbcf6bd34, type: 3}
   contentParent: {fileID: 754007207596777489}
   itemRowPrefab: {fileID: 3784823708176981927, guid: 1aedfd20a39b5b348996b49d90f9f746, type: 3}
   scrollRect: {fileID: 4683632797873393724}

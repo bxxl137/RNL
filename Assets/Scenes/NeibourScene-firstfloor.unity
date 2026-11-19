@@ -6468,6 +6468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f03f3333bb0148e49afae8dc5a33db13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  clip: {fileID: 8300000, guid: 1568b22858eaf3d468319c6ed3e255d1, type: 3}
   letterboxLock: {fileID: 1609293492}
   toastUI: {fileID: 2098524869}
   wellpaperRepair: {fileID: 0}
